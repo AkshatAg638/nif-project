@@ -56,10 +56,7 @@ export const Projects = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20 space-y-12">
-      <Meta
-        title="Donation Projects"
-        description="Support our fundraising projects and donation campaigns targeting healthcare drives and child education."
-      />
+
 
       {/* Title */}
       <div className="text-center max-w-xl mx-auto space-y-3">

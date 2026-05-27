@@ -4,6 +4,10 @@ import axios from 'axios';
 import { ArrowRight, Gift, Users, Award, Heart, CheckCircle2 } from 'lucide-react';
 import { useToast } from '../context/ToastContext.jsx';
 import Meta from '../components/common/Meta.jsx';
+import About from './About.jsx';
+import Programs from './Programs.jsx';
+import Projects from './Projects.jsx';
+import Events from './Events.jsx';
 
 export const Home = () => {
   const [settings, setSettings] = useState(null);
@@ -71,12 +75,13 @@ export const Home = () => {
   ];
 
   return (
-    <div className="space-y-24 pb-20">
+    <div className="pb-20 scroll-smooth">
       <Meta
         title="Namokriti International Foundation | NGO"
         description="Empowering underserved communities globally via education drives, healthcare camps, and environmental relief programs."
       />
 
+      <section id="home" className="space-y-24">
       {/* Hero Section */}
       <div
         className="relative min-h-[85vh] flex items-center bg-cover bg-center text-white"
@@ -424,6 +429,23 @@ export const Home = () => {
           </div>
         </div>
       </div>
+      </section>
+
+      <section id="about" className="scroll-mt-20">
+        <About />
+      </section>
+
+      <section id="programs" className="scroll-mt-20">
+        <Programs />
+      </section>
+
+      <section id="projects" className="scroll-mt-20">
+        <Projects />
+      </section>
+
+      <section id="events" className="scroll-mt-20">
+        <Events />
+      </section>
 
     </div>
   );

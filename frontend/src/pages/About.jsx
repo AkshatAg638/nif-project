@@ -38,10 +38,7 @@ export const About = () => {
 
   return (
     <div className="space-y-24 py-12 pb-20">
-      <Meta
-        title="About Us"
-        description="Discover the history, core values, board members, and history timeline of Namokriti International Foundation."
-      />
+
 
       {/* Intro Header */}
       <div className="max-w-4xl mx-auto px-4 text-center space-y-4">

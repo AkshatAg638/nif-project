@@ -74,10 +74,7 @@ export const Events = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20 space-y-12">
-      <Meta
-        title="NGO Events"
-        description="Join our awareness campaigns, fundraising webinars, and local community service drives."
-      />
+
 
       <div className="text-center max-w-xl mx-auto space-y-3">
         <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">

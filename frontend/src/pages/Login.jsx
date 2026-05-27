@@ -159,6 +159,15 @@ export const Login = () => {
           </>
         )}
 
+        {!is2faPending && (
+          <div className="text-center text-xs text-slate-400 mt-4">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-bold text-emerald-600 hover:underline">
+              Register
+            </Link>
+          </div>
+        )}
+
       </div>
     </div>
   );

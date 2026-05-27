@@ -1,30 +1,102 @@
-import React, { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Moon, LogOut, LayoutDashboard, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const { user, logout, isAuthenticated, isAdmin, isEditor } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
     navigate('/');
   };
 
+  // Section IDs for scroll-spy
+  const sectionIds = ['home', 'about', 'programs', 'projects', 'events'];
+
   const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/about', label: 'About Us' },
-    { path: '/programs', label: 'Programs' },
-    { path: '/projects', label: 'Projects' },
-    { path: '/events', label: 'Events' },
+    { path: '/#home', label: 'Home', sectionId: 'home' },
+    { path: '/#about', label: 'About Us', sectionId: 'about' },
+    { path: '/#programs', label: 'Programs', sectionId: 'programs' },
+    { path: '/#projects', label: 'Projects', sectionId: 'projects' },
+    { path: '/#events', label: 'Events', sectionId: 'events' },
     { path: '/gallery', label: 'Gallery' },
     { path: '/blog', label: 'Blog' },
     { path: '/contact', label: 'Contact' },
   ];
+
+  // Intersection Observer for scroll-spy active section highlighting
+  useEffect(() => {
+    // Only run on the home page
+    if (location.pathname !== '/') return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0,
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  // Reset active section when navigating away from home
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setActiveSection('');
+    } else {
+      setActiveSection('home');
+    }
+  }, [location.pathname]);
+
+  // Smooth scroll handler
+  const handleSectionClick = useCallback((e, sectionId) => {
+    e.preventDefault();
+
+    // If we're not on the home page, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Wait for the page to render, then scroll
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    setIsOpen(false);
+  }, [location.pathname, navigate]);
+
+  // Check if a section link is active
+  const isSectionActive = (sectionId) => {
+    return location.pathname === '/' && activeSection === sectionId;
+  };
 
   return (
     <nav className="sticky top-0 z-50 glass shadow-sm transition-all duration-300">
@@ -33,9 +105,7 @@ export const Navbar = () => {
           
           {/* Logo / Brand */}
           <Link to="/" className="flex items-center gap-2">
-            <span className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-emerald-500/20">
-              N
-            </span>
+            <img src="/logo.jpeg" alt="Namokriti Logo" className="h-12 w-auto object-contain rounded-full shadow-sm" />
             <div>
               <span className="font-extrabold text-xl tracking-tight text-slate-800 dark:text-white block leading-none">
                 Namokriti
@@ -49,19 +119,48 @@ export const Navbar = () => {
           {/* Desktop Nav Links */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({ isActive }) =>
-                  `text-sm font-semibold transition-colors duration-200 hover:text-emerald-600 ${
-                    isActive
-                      ? 'text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-500 pb-1'
+              link.sectionId ? (
+                <button
+                  key={link.path}
+                  onClick={(e) => handleSectionClick(e, link.sectionId)}
+                  className={`relative text-sm font-semibold transition-all duration-300 hover:text-emerald-600 pb-1 ${
+                    isSectionActive(link.sectionId)
+                      ? 'text-emerald-600 dark:text-emerald-400 font-bold'
                       : 'text-slate-600 dark:text-slate-300'
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
+                  }`}
+                >
+                  {link.label}
+                  {/* Smooth animated underline */}
+                  <span
+                    className={`absolute left-0 bottom-0 h-0.5 bg-emerald-500 rounded-full transition-all duration-300 ease-out ${
+                      isSectionActive(link.sectionId) ? 'w-full' : 'w-0'
+                    }`}
+                  />
+                </button>
+              ) : (
+                <NavLink
+                  key={link.path}
+                  to={link.path}
+                  className={({ isActive }) =>
+                    `relative text-sm font-semibold transition-all duration-300 hover:text-emerald-600 pb-1 ${
+                      isActive
+                        ? 'text-emerald-600 dark:text-emerald-400 font-bold'
+                        : 'text-slate-600 dark:text-slate-300'
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      {link.label}
+                      <span
+                        className={`absolute left-0 bottom-0 h-0.5 bg-emerald-500 rounded-full transition-all duration-300 ease-out ${
+                          isActive ? 'w-full' : 'w-0'
+                        }`}
+                      />
+                    </>
+                  )}
+                </NavLink>
+              )
             ))}
           </div>
 
@@ -155,14 +254,28 @@ export const Navbar = () => {
         <div className="lg:hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg">
           <div className="px-2 pt-2 pb-4 space-y-1">
             {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-all"
-              >
-                {link.label}
-              </Link>
+              link.sectionId ? (
+                <button
+                  key={link.path}
+                  onClick={(e) => handleSectionClick(e, link.sectionId)}
+                  className={`block w-full text-left px-4 py-2.5 rounded-xl text-base font-semibold transition-all ${
+                    isSectionActive(link.sectionId)
+                      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 font-bold'
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ) : (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-all"
+                >
+                  {link.label}
+                </Link>
+              )
             ))}
             
             <div className="border-t border-slate-200/50 dark:border-slate-800/50 my-2 pt-2"></div>

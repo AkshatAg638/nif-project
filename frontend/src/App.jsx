@@ -6,14 +6,10 @@ import ProtectedRoute from './components/common/ProtectedRoute.jsx';
 
 // Import Public Pages
 import Home from './pages/Home.jsx';
-import About from './pages/About.jsx';
-import Programs from './pages/Programs.jsx';
-import Projects from './pages/Projects.jsx';
 import ProjectDetail from './pages/ProjectDetail.jsx';
 import Donate from './pages/Donate.jsx';
 import DonationSuccess from './pages/DonationSuccess.jsx';
 import Volunteer from './pages/Volunteer.jsx';
-import Events from './pages/Events.jsx';
 import Gallery from './pages/Gallery.jsx';
 import Blog from './pages/Blog.jsx';
 import BlogDetail from './pages/BlogDetail.jsx';
@@ -50,14 +46,10 @@ export const App = () => {
         <Routes>
           {/* Public Routing */}
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/programs" element={<Programs />} />
-          <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:slug" element={<ProjectDetail />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/donation-success" element={<DonationSuccess />} />
           <Route path="/volunteer" element={<Volunteer />} />
-          <Route path="/events" element={<Events />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />
