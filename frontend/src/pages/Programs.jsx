@@ -3,6 +3,19 @@ import axios from 'axios';
 import { ArrowRight, BookOpen, Activity, Heart, Shield, Landmark, AlertTriangle } from 'lucide-react';
 import Meta from '../components/common/Meta.jsx';
 
+// Svg Helpers
+const SvgUnderline = ({ color = '#C1694F' }) => (
+  <svg viewBox="0 0 100 8" preserveAspectRatio="none" className="w-full h-2 absolute left-0 bottom-[-4px]" aria-hidden="true">
+    <path
+      d="M2,6 C20,2 40,7 55,4 C70,1 85,6 98,3"
+      stroke={color}
+      strokeWidth="2.5"
+      fill="none"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
 export const Programs = () => {
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,124 +36,126 @@ export const Programs = () => {
     fetchPrograms();
   }, []);
 
-  // Custom icon map
-  const getIcon = (category) => {
-    switch (category) {
-      case 'Education': return BookOpen;
-      case 'Healthcare': return Activity;
-      case 'Women Empowerment': return Heart;
-      case 'Environment': return Shield;
-      case 'Child Welfare': return Landmark;
-      case 'Disaster Relief': return AlertTriangle;
-      default: return Heart;
-    }
-  };
-
   const defaultPrograms = [
     {
       category: 'Education Support',
       title: 'Ignite Minds Bridge Learning',
-      description: 'Bringing learning resources and school-building infrastructure to marginalized tribal children.',
-      image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=600',
+      description: 'Establishing grassroots learning clusters, distributing customized school kits, and funding classrooms directly managed by local tribal village councils.',
+      image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=600&auto=format',
       impactMetrics: [
-        { label: 'Children Enrolled', value: '12,500+' },
-        { label: 'Schools Supported', value: '85' },
+        { label: 'Children Reached', value: '12,500+' },
+        { label: 'School Clusters', value: '85' },
       ],
     },
     {
       category: 'Healthcare Access',
-      title: 'Arogya Rural Healthcare Camps',
-      description: 'Running mobile medical vans and primary treatment centers to distribute critical medicines.',
-      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=600',
+      title: 'Arogya Rural Diagnosis Camps',
+      description: 'Deploying mobile medical vans, funding direct village medicine centers, and conducting regular specialist diagnosis camps in remote sectors.',
+      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=600&auto=format',
       impactMetrics: [
         { label: 'Patients Treated', value: '35,000+' },
-        { label: 'Free Camps Held', value: '140+' },
+        { label: 'Free Mobile Vans', value: '140+' },
       ],
     },
     {
       category: 'Women Empowerment',
-      title: 'Udyami Sewing Skill Centers',
-      description: 'Instructing women in textile, tailoring, and crafting designs to encourage home businesses.',
-      image: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=600',
+      title: 'Udyami Craft & Tailoring Centers',
+      description: 'Equipping women with textile design knowledge, providing sewing starters, and guiding self-help groups to build independent local businesses.',
+      image: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=600&auto=format',
       impactMetrics: [
-        { label: 'Women Trained', value: '4,200+' },
-        { label: 'Businesses Started', value: '850' },
+        { label: 'Women Equipped', value: '4,200+' },
+        { label: 'Micro-Businesses', value: '850' },
       ],
     },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20 space-y-16">
+    <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-24 space-y-20 bg-[#FAF7F0] text-[#1a2e22]">
+      <Meta
+        title="Our Focus Sectors"
+        description="Explore the educational, medical, and community empowerment initiatives coordinates directly by Namokriti Foundation."
+      />
 
-
-      <div className="text-center max-w-xl mx-auto space-y-4">
-        <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-          Core Focus Sectors
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-800 dark:text-white">
-          Our Operational Programs
-        </h1>
-        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed">
-          Through strategic operations, we address grassroots challenges and build resilient communities.
-        </p>
+      {/* Header — Typographic editorial layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-6 border-b border-[#2D6A4F]/10">
+        <div className="lg:col-span-5 space-y-3">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#2D6A4F] block">Sectors of Action</span>
+          <h1 className="text-4xl sm:text-5xl font-black text-[#1a2e22] leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Operational<br />
+            <span className="relative inline-block text-[#C1694F] italic font-normal">
+              Programs.
+              <SvgUnderline color="#C1694F" />
+            </span>
+          </h1>
+        </div>
+        <div className="lg:col-span-7 pt-4 lg:pt-8">
+          <p className="text-base text-[#4a6355] leading-relaxed max-w-xl">
+            We do not deploy vague or abstract programs. Namokriti maps capital directly to immediate community demands. Each focus sector delivers documented, audit-ready support under the direct oversight of local village leadership.
+          </p>
+        </div>
       </div>
 
+      {/* Programs List — Typographic Asymmetric Journal style */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="space-y-12">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="h-96 skeleton"></div>
+            <div key={n} className="h-96 bg-[#2D6A4F]/5 animate-pulse rounded-2xl"></div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="space-y-20 sm:space-y-28">
           {(programs.length === 0 ? defaultPrograms : programs).map((prog, index) => {
-            const Icon = getIcon(prog.category);
+            const isEven = index % 2 === 0;
             return (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center"
               >
-                <img
-                  src={prog.image}
-                  alt={prog.title}
-                  className="w-full h-52 object-cover"
-                />
-                <div className="p-8 flex flex-col grow justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
-                        <Icon size={20} />
-                      </div>
-                      <span className="font-bold text-slate-800 dark:text-white text-base">
-                        {prog.category}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-850 dark:text-white">
+                {/* Image Section — Alternating layout */}
+                <div className={`lg:col-span-6 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
+                  <div className="relative group overflow-hidden rounded-2xl border border-[#2D6A4F]/10 shadow-sm">
+                    <img
+                      src={prog.image}
+                      alt={prog.title}
+                      className="w-full h-[320px] sm:h-[400px] object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[#2D6A4F]/5 mix-blend-multiply transition-opacity duration-300 group-hover:opacity-0" />
+                  </div>
+                </div>
+
+                {/* Content Section */}
+                <div className={`lg:col-span-6 space-y-6 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#C1694F]">
+                      [ {prog.category} ]
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-black text-[#1a2e22] leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
                       {prog.title}
                     </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                      {prog.description}
-                    </p>
                   </div>
 
-                  <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700/50 space-y-4">
-                    <h4 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
-                      Impact Metrics Recorded
+                  <p className="text-sm sm:text-base text-[#4a6355] leading-relaxed">
+                    {prog.description}
+                  </p>
+
+                  {/* Impact metrics: sleek typography rows instead of card blocks */}
+                  <div className="pt-6 border-t border-[#2D6A4F]/10 space-y-4">
+                    <h4 className="text-[10px] font-black uppercase text-[#2D6A4F] tracking-widest">
+                      Documented Ground Impact
                     </h4>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-6 pt-2">
                       {prog.impactMetrics?.map((met, i) => (
-                        <div key={i} className="space-y-0.5">
-                          <span className="block text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                        <div key={i} className="space-y-1">
+                          <span className="block text-3xl font-black text-[#C1694F]" style={{ fontFamily: "'Playfair Display', serif" }}>
                             {met.value}
                           </span>
-                          <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">
+                          <span className="block text-[11px] font-bold text-[#4a6355] uppercase tracking-wider leading-snug">
                             {met.label}
                           </span>
                         </div>
                       ))}
                     </div>
                   </div>
-
                 </div>
               </div>
             );

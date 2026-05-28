@@ -1,9 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { CreditCard, Shield, Heart, Info, DollarSign } from 'lucide-react';
+import { CreditCard, Shield, Heart, Info, DollarSign, ArrowRight, Check } from 'lucide-react';
 import { useToast } from '../context/ToastContext.jsx';
 import Meta from '../components/common/Meta.jsx';
+
+// Svg Helpers
+const OrgBlob = ({ color = '#74C69D', opacity = 0.08, className = '' }) => (
+  <svg viewBox="0 0 200 200" className={className} aria-hidden="true">
+    <path
+      fill={color}
+      fillOpacity={opacity}
+      d="M44.7,-62.3C56.6,-53.4,63.6,-37.6,67.2,-21.5C70.8,-5.4,70.9,11,64.4,24.3C57.8,37.7,44.5,47.9,30.2,56.2C15.8,64.6,0.4,71,-15.4,70.1C-31.2,69.3,-47.4,61.2,-58.2,48.5C-69,35.8,-74.4,18.5,-72.4,2.9C-70.5,-12.7,-61.1,-26.6,-50.3,-36.1C-39.5,-45.6,-27.2,-50.8,-14.2,-57.8C-1.2,-64.8,12.6,-73.7,26.7,-73.1C40.8,-72.4,55.1,-62.3,44.7,-62.3Z"
+      transform="translate(100 100)"
+    />
+  </svg>
+);
+
+const SvgUnderline = ({ color = '#C1694F' }) => (
+  <svg viewBox="0 0 100 8" preserveAspectRatio="none" className="w-full h-2 absolute left-0 bottom-[-4px]" aria-hidden="true">
+    <path
+      d="M2,6 C20,2 40,7 55,4 C70,1 85,6 98,3"
+      stroke={color}
+      strokeWidth="2.5"
+      fill="none"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 export const Donate = () => {
   const [searchParams] = useSearchParams();
@@ -144,222 +168,302 @@ export const Donate = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20 grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+    <div className="relative min-h-screen grain py-16 sm:py-24" style={{ background: '#FAF7F0' }}>
       <Meta
         title="Donate Now"
         description="Help us make a difference. Contribute to child education, rural development, and disaster relief programs."
       />
+      {/* Background blobs for organic textures */}
+      <OrgBlob color="#74C69D" opacity={0.06} className="absolute top-20 left-10 w-72 h-72 pointer-events-none" />
+      <OrgBlob color="#C1694F" opacity={0.04} className="absolute bottom-20 right-10 w-96 h-96 pointer-events-none" />
 
-      {/* Intro Form Description */}
-      <div className="lg:col-span-2 space-y-6">
-        <div className="space-y-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-            Make a Difference
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-800 dark:text-white leading-tight">
-            Support Our Initiatives
-          </h1>
-        </div>
-        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-          Every contribution you make helps us distribute educational supplies, mobilize diagnostic vehicles, and establish water treatment systems in vulnerable sectors.
-        </p>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          
+          {/* LEFT: Editorial Introduction & trust guarantees */}
+          <div className="lg:col-span-5 space-y-8 lg:sticky lg:top-28">
+            <div className="space-y-4">
+              <div className="section-label section-label-terra">Direct Support</div>
+              <h1 className="text-4xl sm:text-5xl font-black text-[#1a2e22] leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+                True Empowerment.<br />
+                <span className="relative inline-block text-[#C1694F]">
+                  Sacred Action.
+                  <SvgUnderline color="#C1694F" />
+                </span>
+              </h1>
+            </div>
+            
+            <p className="text-base text-[#4a6355] leading-relaxed max-w-lg">
+              Namokriti means sacred action. We don't fund administration or abstract layers. Every contribution you make directly enables field operations: delivering school kits, establishing solar grids, and running mobile medical vans in rural villages.
+            </p>
 
-        <div className="bg-slate-50 dark:bg-slate-800/40 p-6 rounded-2xl border space-y-4">
-          <div className="flex gap-4">
-            <Shield className="text-emerald-500 shrink-0" size={20} />
-            <div className="space-y-1">
-              <h4 className="font-bold text-slate-800 dark:text-white text-sm">Secure Checkout</h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                All transaction sessions are encrypted natively via Stripe/Razorpay protocols.
-              </p>
+            <div className="border-t border-[#2D6A4F]/10 pt-8 space-y-6">
+              {[
+                {
+                  title: '100% Direct Allocation',
+                  desc: 'Every rupee goes directly into field operations, and every action is fully documented and reported back to you.',
+                  icon: Heart,
+                  color: '#2D6A4F'
+                },
+                {
+                  title: 'Secure Gateway Processing',
+                  desc: 'All payments are encrypted natively via Stripe and Razorpay protocols. No card data is ever stored on our servers.',
+                  icon: Shield,
+                  color: '#C1694F'
+                },
+                {
+                  title: 'Tax Exemption under 80G',
+                  desc: 'All contributions qualify for maximum tax benefits. A formal tax receipt is generated and emailed to you instantly.',
+                  icon: Info,
+                  color: '#E9C46A'
+                }
+              ].map((item, i) => {
+                const IconComp = item.icon;
+                return (
+                  <div key={i} className="flex gap-4 items-start">
+                    <div className="p-2.5 rounded-xl shrink-0" style={{ background: `${item.color}15`, color: item.color }}>
+                      <IconComp size={18} />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1a2e22] text-sm">{item.title}</h4>
+                      <p className="text-xs text-[#5c7a69] leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <div className="flex gap-4">
-            <Heart className="text-emerald-500 shrink-0" size={20} />
-            <div className="space-y-1">
-              <h4 className="font-bold text-slate-800 dark:text-white text-sm">Tax Deductions (80G)</h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                All donations qualify for tax deductions. Formal receipt generated instantly.
-              </p>
+
+          {/* RIGHT: Elegant, decardified form flow */}
+          <form onSubmit={handleDonationSubmit} className="lg:col-span-7 space-y-10">
+            
+            {/* Step 1: Donation Amount */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F]">01</span>
+                <h3 className="text-lg font-bold text-[#1a2e22]">Donation Amount</h3>
+              </div>
+
+              {/* Quick Select Buttons */}
+              <div className="grid grid-cols-4 gap-3">
+                {[500, 1000, 2000, 5000].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleQuickAmount(val)}
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      background: amount === val.toString() ? '#2D6A4F' : '#FAF7F0',
+                      color: amount === val.toString() ? '#FAF7F0' : '#4a6355',
+                      borderColor: amount === val.toString() ? '#2D6A4F' : 'rgba(45,106,79,0.15)',
+                    }}
+                    className="py-3.5 rounded-xl border text-sm font-bold transition-all hover:scale-[1.02] active:scale-100 shadow-sm hover:shadow-md cursor-pointer"
+                  >
+                    ₹{val.toLocaleString('en-IN')}
+                  </button>
+                ))}
+              </div>
+
+              {/* Custom Input Block */}
+              <div className="relative group">
+                <div className="absolute left-0 bottom-4 text-2xl font-bold text-[#2D6A4F] pointer-events-none">₹</div>
+                <input
+                  type="number"
+                  required
+                  placeholder="Other custom amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    borderBottom: '2px solid rgba(45, 106, 79, 0.15)',
+                  }}
+                  className="w-full bg-transparent border-t-0 border-l-0 border-r-0 pl-7 pr-4 py-3.5 text-3xl font-black text-[#1a2e22] placeholder-[#4a6355]/40 focus:outline-none focus:border-[#2D6A4F] transition-all"
+                />
+              </div>
             </div>
-          </div>
+
+            {/* Step 2: Purpose selector */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F]">02</span>
+                <h3 className="text-lg font-bold text-[#1a2e22]">Campaign Purpose</h3>
+              </div>
+
+              <div className="relative">
+                {campaignsLoading ? (
+                  <div className="h-12 bg-[#2D6A4F]/5 animate-pulse rounded-xl"></div>
+                ) : (
+                  <select
+                    value={purpose}
+                    onChange={(e) => setPurpose(e.target.value)}
+                    style={{
+                      background: '#FAF7F0',
+                      border: '1px solid rgba(45,106,79,0.15)',
+                      color: '#1a2e22',
+                    }}
+                    className="w-full rounded-xl px-4 py-3.5 text-sm font-semibold focus:outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F] cursor-pointer"
+                  >
+                    <option value="General Contribution">General Support Relief (Greatest Need)</option>
+                    {projects.map((proj) => (
+                      <option key={proj._id} value={proj.title}>
+                        Campaign: {proj.title}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            </div>
+
+            {/* Step 3: Donor details */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F]">03</span>
+                <h3 className="text-lg font-bold text-[#1a2e22]">Donor Details</h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#4a6355] uppercase tracking-wider block">Full Name</label>
+                  <input
+                    type="text"
+                    disabled={isAnonymous}
+                    required={!isAnonymous}
+                    placeholder={isAnonymous ? 'Anonymous Donor' : 'e.g. Rahul Sharma'}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    style={{
+                      background: isAnonymous ? 'rgba(45,106,79,0.03)' : '#FAF7F0',
+                      border: '1px solid rgba(45,106,79,0.15)',
+                    }}
+                    className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#4a6355] uppercase tracking-wider block">Phone Contact</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. +91 9988776655"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    style={{
+                      background: '#FAF7F0',
+                      border: '1px solid rgba(45,106,79,0.15)',
+                    }}
+                    className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-[#4a6355] uppercase tracking-wider block">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="e.g. rahul@mail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={{
+                    background: '#FAF7F0',
+                    border: '1px solid rgba(45,106,79,0.15)',
+                  }}
+                  className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#2D6A4F] focus:ring-1 focus:ring-[#2D6A4F]"
+                />
+              </div>
+
+              {/* Toggles */}
+              <div className="flex flex-col sm:flex-row gap-5 sm:items-center justify-between pt-3 border-t border-[#2D6A4F]/10">
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={isAnonymous}
+                      onChange={(e) => setIsAnonymous(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div className={`w-5 h-5 rounded border transition-colors flex items-center justify-center ${isAnonymous ? 'bg-[#2D6A4F] border-[#2D6A4F]' : 'border-slate-350 bg-[#FAF7F0]'}`}>
+                      {isAnonymous && <Check size={12} className="text-[#FAF7F0] stroke-[3]" />}
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-[#4a6355]">
+                    Donate anonymously (donor wall hides name)
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={isRecurring}
+                      onChange={(e) => setIsRecurring(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div className={`w-5 h-5 rounded border transition-colors flex items-center justify-center ${isRecurring ? 'bg-[#2D6A4F] border-[#2D6A4F]' : 'border-slate-350 bg-[#FAF7F0]'}`}>
+                      {isRecurring && <Check size={12} className="text-[#FAF7F0] stroke-[3]" />}
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-[#4a6355]">
+                    Make this monthly recurring support
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            {/* Step 4: Payment gateway */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F]">04</span>
+                <h3 className="text-lg font-bold text-[#1a2e22]">Secure Gateway</h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setPaymentGateway('stripe')}
+                  style={{
+                    background: '#FAF7F0',
+                    borderColor: paymentGateway === 'stripe' ? '#2D6A4F' : 'rgba(45,106,79,0.15)',
+                    borderWidth: paymentGateway === 'stripe' ? '2px' : '1px',
+                  }}
+                  className="p-5 rounded-2xl border flex flex-col items-center gap-2 transition-all hover:scale-[1.01] hover:shadow-sm cursor-pointer"
+                >
+                  <CreditCard size={20} className={paymentGateway === 'stripe' ? 'text-[#2D6A4F]' : 'text-[#4a6355]'} />
+                  <span className={`text-xs font-bold ${paymentGateway === 'stripe' ? 'text-[#2D6A4F]' : 'text-[#4a6355]'}`}>Stripe Cards</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentGateway('razorpay')}
+                  style={{
+                    background: '#FAF7F0',
+                    borderColor: paymentGateway === 'razorpay' ? '#2D6A4F' : 'rgba(45,106,79,0.15)',
+                    borderWidth: paymentGateway === 'razorpay' ? '2px' : '1px',
+                  }}
+                  className="p-5 rounded-2xl border flex flex-col items-center gap-2 transition-all hover:scale-[1.01] hover:shadow-sm cursor-pointer"
+                >
+                  <DollarSign size={20} className={paymentGateway === 'razorpay' ? 'text-[#2D6A4F]' : 'text-[#4a6355]'} />
+                  <span className={`text-xs font-bold ${paymentGateway === 'razorpay' ? 'text-[#2D6A4F]' : 'text-[#4a6355]'}`}>Razorpay / UPI</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Submit button */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full btn-terracotta justify-center py-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md active:translate-y-0 cursor-pointer"
+              >
+                {loading ? 'Initializing secure payment session...' : `Proceed with Contribution (₹${amount ? Number(amount).toLocaleString('en-IN') : '0'})`}
+                {!loading && <ArrowRight size={16} />}
+              </button>
+            </div>
+
+          </form>
+
         </div>
       </div>
-
-      {/* Donation Form */}
-      <form
-        onSubmit={handleDonationSubmit}
-        className="lg:col-span-3 bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl space-y-6"
-      >
-        <h2 className="text-xl font-bold text-slate-850 dark:text-white">Donation Amount</h2>
-        
-        {/* Quick select amounts */}
-        <div className="grid grid-cols-4 gap-3">
-          {[500, 1000, 2000, 5000].map((val) => (
-            <button
-              key={val}
-              type="button"
-              onClick={() => handleQuickAmount(val)}
-              className={`py-3 rounded-xl border text-sm font-bold transition-all ${
-                amount === val.toString()
-                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-md'
-                  : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700'
-              }`}
-            >
-              ₹{val}
-            </button>
-          ))}
-        </div>
-
-        {/* Custom input */}
-        <div className="relative">
-          <div className="absolute left-4 top-3 text-slate-400 font-bold">₹</div>
-          <input
-            type="number"
-            required
-            placeholder="Other custom amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl pl-8 pr-4 py-3 text-sm focus:outline-none focus:border-emerald-500 font-bold"
-          />
-        </div>
-
-        {/* Dynamic selector of campaign targets */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-            Campaign Purpose
-          </label>
-          {campaignsLoading ? (
-            <div className="h-10 skeleton"></div>
-          ) : (
-            <select
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500"
-            >
-              <option value="General Contribution">General Support Relief</option>
-              {projects.map((proj) => (
-                <option key={proj._id} value={proj.title}>
-                  Campaign: {proj.title}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-
-        <div className="border-t border-slate-100 dark:border-slate-700/50 pt-4 space-y-4">
-          <h3 className="text-base font-bold text-slate-800 dark:text-white">Donor Details</h3>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-500">Full Name</label>
-              <input
-                type="text"
-                disabled={isAnonymous}
-                required={!isAnonymous}
-                placeholder="e.g. Rahul Sharma"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-500">Phone Contact</label>
-              <input
-                type="tel"
-                required
-                placeholder="e.g. +91 9988776655"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500">Email Address</label>
-            <input
-              type="email"
-              required
-              placeholder="e.g. rahul@mail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500"
-            />
-          </div>
-
-          {/* Options: anonymous or recurring */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between pt-2">
-            <label className="flex items-center gap-2.5 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={isAnonymous}
-                onChange={(e) => setIsAnonymous(e.target.checked)}
-                className="rounded border-slate-350 dark:border-slate-700 text-emerald-600 focus:ring-emerald-500 h-4 w-4"
-              />
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                Donate anonymously (donor wall hides name)
-              </span>
-            </label>
-
-            <label className="flex items-center gap-2.5 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={isRecurring}
-                onChange={(e) => setIsRecurring(e.target.checked)}
-                className="rounded border-slate-350 dark:border-slate-700 text-emerald-600 focus:ring-emerald-500 h-4 w-4"
-              />
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                Make this monthly recurring support
-              </span>
-            </label>
-          </div>
-        </div>
-
-        {/* Gateway select buttons */}
-        <div className="border-t border-slate-100 dark:border-slate-700/50 pt-4 space-y-3">
-          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-            Select Payment Gateway
-          </label>
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              onClick={() => setPaymentGateway('stripe')}
-              className={`p-4 rounded-2xl border flex flex-col items-center gap-1 transition-all ${
-                paymentGateway === 'stripe'
-                  ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 font-bold'
-                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500'
-              }`}
-            >
-              <CreditCard size={20} />
-              <span className="text-xs">Stripe Cards</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setPaymentGateway('razorpay')}
-              className={`p-4 rounded-2xl border flex flex-col items-center gap-1 transition-all ${
-                paymentGateway === 'razorpay'
-                  ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 font-bold'
-                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500'
-              }`}
-            >
-              <DollarSign size={20} />
-              <span className="text-xs">Razorpay / UPI</span>
-            </button>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-700 text-white font-bold text-sm rounded-2xl shadow-lg transition-all"
-        >
-          {loading ? 'Initializing payment session...' : `Proceed with Donation (₹${amount || '0'})`}
-        </button>
-
-      </form>
     </div>
   );
 };

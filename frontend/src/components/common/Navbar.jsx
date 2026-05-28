@@ -1,16 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon, LogOut, LayoutDashboard, User } from 'lucide-react';
+import { Menu, X, LogOut, LayoutDashboard, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { useTheme } from '../../context/ThemeContext.jsx';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { user, logout, isAuthenticated, isAdmin, isEditor } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Accessibility Font Zoom State
+  const [fontSize, setFontSize] = useState(() => {
+    return localStorage.getItem('font-size-scale') || '100';
+  });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.style.fontSize = fontSize === '100' ? '' : `${fontSize}%`;
+    localStorage.setItem('font-size-scale', fontSize);
+  }, [fontSize]);
 
   const handleLogout = async () => {
     await logout();
@@ -99,18 +108,18 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass shadow-sm transition-all duration-300">
+    <nav className="sticky top-0 z-50 glass transition-all duration-300" style={{ boxShadow: '0 1px 0 rgba(45,106,79,0.08)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
           {/* Logo / Brand */}
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.jpeg" alt="Namokriti Logo" className="h-12 w-auto object-contain rounded-full shadow-sm" />
+          <Link to="/" className="flex items-center gap-2.5">
+            <img src="/logo.jpeg" alt="Namokriti Logo" className="h-11 w-auto object-contain rounded-full shadow-sm" />
             <div>
-              <span className="font-extrabold text-xl tracking-tight text-slate-800 dark:text-white block leading-none">
+              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800, fontSize: '1.15rem', color: '#1a2e22', letterSpacing: '-0.01em', display: 'block', lineHeight: 1.1 }}>
                 Namokriti
               </span>
-              <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 block tracking-widest mt-0.5 uppercase">
+              <span style={{ fontSize: '0.6rem', fontWeight: 700, color: '#6b8c7a', letterSpacing: '0.18em', textTransform: 'uppercase', display: 'block', marginTop: 2 }}>
                 International
               </span>
             </div>
@@ -123,39 +132,57 @@ export const Navbar = () => {
                 <button
                   key={link.path}
                   onClick={(e) => handleSectionClick(e, link.sectionId)}
-                  className={`relative text-sm font-semibold transition-all duration-300 hover:text-emerald-600 pb-1 ${
-                    isSectionActive(link.sectionId)
-                      ? 'text-emerald-600 dark:text-emerald-400 font-bold'
-                      : 'text-slate-600 dark:text-slate-300'
-                  }`}
+                  className="relative pb-1"
+                  style={{
+                    fontSize: '0.88rem',
+                    fontWeight: isSectionActive(link.sectionId) ? 700 : 500,
+                    color: isSectionActive(link.sectionId) ? '#2D6A4F' : '#4a6355',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'color 0.2s',
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#2D6A4F'}
+                  onMouseLeave={e => { if (!isSectionActive(link.sectionId)) e.currentTarget.style.color = '#4a6355'; }}
                 >
                   {link.label}
-                  {/* Smooth animated underline */}
                   <span
-                    className={`absolute left-0 bottom-0 h-0.5 bg-emerald-500 rounded-full transition-all duration-300 ease-out ${
-                      isSectionActive(link.sectionId) ? 'w-full' : 'w-0'
-                    }`}
+                    style={{
+                      position: 'absolute', left: 0, bottom: 0,
+                      height: 2, borderRadius: 99,
+                      background: 'linear-gradient(90deg, #74C69D, #2D6A4F)',
+                      transition: 'width 0.3s ease',
+                      width: isSectionActive(link.sectionId) ? '100%' : '0%',
+                    }}
                   />
                 </button>
               ) : (
                 <NavLink
                   key={link.path}
                   to={link.path}
-                  className={({ isActive }) =>
-                    `relative text-sm font-semibold transition-all duration-300 hover:text-emerald-600 pb-1 ${
-                      isActive
-                        ? 'text-emerald-600 dark:text-emerald-400 font-bold'
-                        : 'text-slate-600 dark:text-slate-300'
-                    }`
-                  }
+                  style={({ isActive }) => ({
+                    position: 'relative',
+                    fontSize: '0.88rem',
+                    fontWeight: isActive ? 700 : 500,
+                    color: isActive ? '#2D6A4F' : '#4a6355',
+                    textDecoration: 'none',
+                    paddingBottom: 4,
+                    transition: 'color 0.2s',
+                    fontFamily: "'DM Sans', sans-serif",
+                  })}
                 >
                   {({ isActive }) => (
                     <>
                       {link.label}
                       <span
-                        className={`absolute left-0 bottom-0 h-0.5 bg-emerald-500 rounded-full transition-all duration-300 ease-out ${
-                          isActive ? 'w-full' : 'w-0'
-                        }`}
+                        style={{
+                          position: 'absolute', left: 0, bottom: 0,
+                          height: 2, borderRadius: 99,
+                          background: 'linear-gradient(90deg, #74C69D, #2D6A4F)',
+                          transition: 'width 0.3s ease',
+                          width: isActive ? '100%' : '0%',
+                        }}
                       />
                     </>
                   )}
@@ -165,50 +192,81 @@ export const Navbar = () => {
           </div>
 
           {/* User widgets & Actions */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-6">
             
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
+            {/* Font Size Accessibility Widget */}
+            <div className="flex items-center gap-0.5 border border-[#2D6A4F]/10 rounded-lg p-0.5 bg-slate-50/50">
+              <button
+                onClick={() => setFontSize('90')}
+                style={{
+                  background: fontSize === '90' ? '#2D6A4F' : 'transparent',
+                  color: fontSize === '90' ? '#FAF7F0' : '#4a6355',
+                }}
+                className="w-7 h-7 flex items-center justify-center text-[10px] font-bold rounded-md hover:bg-[#2D6A4F]/5 transition-all cursor-pointer"
+                aria-label="Decrease Font Size"
+              >
+                A-
+              </button>
+              <button
+                onClick={() => setFontSize('100')}
+                style={{
+                  background: fontSize === '100' ? '#2D6A4F' : 'transparent',
+                  color: fontSize === '100' ? '#FAF7F0' : '#4a6355',
+                }}
+                className="w-7 h-7 flex items-center justify-center text-xs font-bold rounded-md hover:bg-[#2D6A4F]/5 transition-all cursor-pointer"
+                aria-label="Normal Font Size"
+              >
+                A
+              </button>
+              <button
+                onClick={() => setFontSize('110')}
+                style={{
+                  background: fontSize === '110' ? '#2D6A4F' : 'transparent',
+                  color: fontSize === '110' ? '#FAF7F0' : '#4a6355',
+                }}
+                className="w-7 h-7 flex items-center justify-center text-[13px] font-bold rounded-md hover:bg-[#2D6A4F]/5 transition-all cursor-pointer"
+                aria-label="Increase Font Size"
+              >
+                A+
+              </button>
+            </div>
 
             {/* Auth section */}
             {isAuthenticated ? (
               <div className="relative group flex items-center gap-2 cursor-pointer">
-                <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 font-semibold text-sm flex items-center gap-1.5 border border-slate-200/50 dark:border-slate-700/50">
-                  <User size={16} />
+                <div style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(45,106,79,0.08)', color: '#2D6A4F', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6, border: '1px solid rgba(45,106,79,0.12)' }}>
+                  <User size={14} />
                   <span>{user.name.split(' ')[0]}</span>
                 </div>
                 
-                {/* Dropdown Menu */}
+                {/* Dropdown */}
                 <div className="absolute right-0 top-full pt-2 w-48 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200">
-                  <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 p-2">
+                  <div style={{ background: '#FAF7F0', borderRadius: 14, boxShadow: '0 8px 32px rgba(45,106,79,0.12)', border: '1px solid rgba(45,106,79,0.1)', padding: 6 }}>
                     {(isAdmin || isEditor) && (
                       <Link
                         to="/admin"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: '0.85rem', color: '#2D6A4F', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}
+                        className="hover:bg-green-50 transition-colors"
                       >
-                        <LayoutDashboard size={16} />
+                        <LayoutDashboard size={14} />
                         <span>Admin Panel</span>
                       </Link>
                     )}
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: '0.85rem', color: '#4a6355', borderRadius: 8, textDecoration: 'none' }}
+                      className="hover:bg-green-50 transition-colors"
                     >
-                      <User size={16} />
+                      <User size={14} />
                       <span>My Profile</span>
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors text-left"
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: '0.85rem', color: '#C1694F', background: 'none', border: 'none', borderRadius: 8, cursor: 'pointer', textAlign: 'left' }}
+                      className="hover:bg-red-50 transition-colors"
                     >
-                      <LogOut size={16} />
-                      <span>Logout</span>
+                      <LogOut size={14} />
+                      <span>Sign Out</span>
                     </button>
                   </div>
                 </div>
@@ -216,34 +274,68 @@ export const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600"
+                style={{ fontSize: '0.88rem', fontWeight: 600, color: '#4a6355', textDecoration: 'none' }}
+                className="hover:text-forest transition-colors"
               >
                 Sign In
               </Link>
             )}
 
-            {/* Donate Call to Action */}
+            {/* Donate CTA — Terracotta brand colour */}
             <Link
               to="/donate"
-              className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm shadow-md shadow-emerald-600/10 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 btn-premium"
+              className="btn-terracotta"
+              style={{ padding: '10px 22px', fontSize: '0.85rem' }}
             >
               Donate Now
             </Link>
           </div>
 
           {/* Mobile menu button */}
-          <div className="lg:hidden flex items-center gap-2">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
-            >
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
+          <div className="lg:hidden flex items-center gap-3">
+            {/* Font Size Accessibility Widget */}
+            <div className="flex items-center gap-0.5 border border-[#2D6A4F]/10 rounded-lg p-0.5 bg-slate-50/50">
+              <button
+                onClick={() => setFontSize('90')}
+                style={{
+                  background: fontSize === '90' ? '#2D6A4F' : 'transparent',
+                  color: fontSize === '90' ? '#FAF7F0' : '#4a6355',
+                }}
+                className="w-6 h-6 flex items-center justify-center text-[9px] font-bold rounded-md cursor-pointer"
+                aria-label="Decrease Font Size"
+              >
+                A-
+              </button>
+              <button
+                onClick={() => setFontSize('100')}
+                style={{
+                  background: fontSize === '100' ? '#2D6A4F' : 'transparent',
+                  color: fontSize === '100' ? '#FAF7F0' : '#4a6355',
+                }}
+                className="w-6 h-6 flex items-center justify-center text-[11px] font-bold rounded-md cursor-pointer"
+                aria-label="Normal Font Size"
+              >
+                A
+              </button>
+              <button
+                onClick={() => setFontSize('110')}
+                style={{
+                  background: fontSize === '110' ? '#2D6A4F' : 'transparent',
+                  color: fontSize === '110' ? '#FAF7F0' : '#4a6355',
+                }}
+                className="w-6 h-6 flex items-center justify-center text-xs font-bold rounded-md cursor-pointer"
+                aria-label="Increase Font Size"
+              >
+                A+
+              </button>
+            </div>
+
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg transition-colors cursor-pointer"
+              style={{ color: '#2D6A4F' }}
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -251,18 +343,22 @@ export const Navbar = () => {
 
       {/* Mobile Menu Panel */}
       {isOpen && (
-        <div className="lg:hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg">
-          <div className="px-2 pt-2 pb-4 space-y-1">
+        <div className="lg:hidden" style={{ borderTop: '1px solid rgba(45,106,79,0.1)', background: 'rgba(250,247,240,0.97)', backdropFilter: 'blur(20px)' }}>
+          <div className="px-4 pt-3 pb-5" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {navLinks.map((link) => (
               link.sectionId ? (
                 <button
                   key={link.path}
                   onClick={(e) => handleSectionClick(e, link.sectionId)}
-                  className={`block w-full text-left px-4 py-2.5 rounded-xl text-base font-semibold transition-all ${
-                    isSectionActive(link.sectionId)
-                      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 font-bold'
-                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600'
-                  }`}
+                  style={{
+                    display: 'block', width: '100%', textAlign: 'left',
+                    padding: '10px 12px', borderRadius: 10,
+                    fontSize: '0.9rem', fontWeight: isSectionActive(link.sectionId) ? 700 : 500,
+                    color: isSectionActive(link.sectionId) ? '#2D6A4F' : '#4a6355',
+                    background: isSectionActive(link.sectionId) ? 'rgba(45,106,79,0.08)' : 'none',
+                    border: 'none', cursor: 'pointer', transition: 'all 0.2s',
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
                 >
                   {link.label}
                 </button>
@@ -271,14 +367,14 @@ export const Navbar = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-all"
+                  style={{ display: 'block', padding: '10px 12px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500, color: '#4a6355', textDecoration: 'none', transition: 'all 0.2s' }}
                 >
                   {link.label}
                 </Link>
               )
             ))}
             
-            <div className="border-t border-slate-200/50 dark:border-slate-800/50 my-2 pt-2"></div>
+            <div style={{ borderTop: '1px solid rgba(45,106,79,0.1)', margin: '8px 0' }} />
             
             {isAuthenticated ? (
               <>
@@ -286,46 +382,44 @@ export const Navbar = () => {
                   <Link
                     to="/admin"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-base font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+                    style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 600, color: '#2D6A4F', textDecoration: 'none' }}
                   >
-                    <LayoutDashboard size={18} />
+                    <LayoutDashboard size={16} />
                     <span>Admin Panel</span>
                   </Link>
                 )}
                 <Link
                   to="/profile"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-base font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500, color: '#4a6355', textDecoration: 'none' }}
                 >
-                  <User size={18} />
+                  <User size={16} />
                   <span>My Profile</span>
                 </Link>
                 <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    handleLogout();
-                  }}
-                  className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-base font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 text-left transition-all"
+                  onClick={() => { setIsOpen(false); handleLogout(); }}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 600, color: '#C1694F', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
                 >
-                  <LogOut size={18} />
-                  <span>Logout</span>
+                  <LogOut size={16} />
+                  <span>Sign Out</span>
                 </button>
               </>
             ) : (
               <Link
                 to="/login"
                 onClick={() => setIsOpen(false)}
-                className="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+                style={{ display: 'block', padding: '10px 12px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500, color: '#4a6355', textDecoration: 'none' }}
               >
                 Sign In
               </Link>
             )}
 
-            <div className="px-4 mt-4">
+            <div style={{ paddingTop: 8 }}>
               <Link
                 to="/donate"
                 onClick={() => setIsOpen(false)}
-                className="block w-full py-3 rounded-xl bg-emerald-600 text-white font-semibold text-center hover:bg-emerald-700 shadow-md transition-all"
+                className="btn-terracotta"
+                style={{ width: '100%', justifyContent: 'center', fontSize: '0.9rem' }}
               >
                 Donate Now
               </Link>

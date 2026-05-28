@@ -2,64 +2,468 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   DESIGN SYSTEM — Namokriti International Foundation
+   Philosophy: Warm, human, editorial — NOT tech-startup
+   Palette: Forest (#2D6A4F) · Terracotta (#C1694F) · Ivory (#FAF7F0)
+             Sage (#74C69D) · Sand (#E9C46A)
+   Typography: Playfair Display (headlines) + DM Sans (body)
+   ============================================================ */
+
 @layer base {
   html {
     scroll-behavior: smooth;
+    font-family: 'DM Sans', 'Outfit', system-ui, sans-serif;
+    background-color: #FAF7F0;
+    color: #1a1a18;
+  }
+
+  body {
+    @apply antialiased;
+    background-color: #FAF7F0;
+  }
+
+  /* Editorial serif — headlines only */
+  h1, h2, .font-serif {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    letter-spacing: -0.01em;
+  }
+
+  h3, h4, h5, h6 {
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+
+  /* Heading scale */
+  h1 { @apply text-4xl sm:text-5xl lg:text-6xl font-black leading-tight; }
+  h2 { @apply text-3xl sm:text-4xl font-bold leading-snug; }
+  h3 { @apply text-xl font-bold; }
+
+  /* Keyboard focus */
+  *:focus-visible {
+    outline: 2px solid #2D6A4F;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Smooth image rendering */
+  img { display: block; max-width: 100%; }
+
+  ::selection {
+    background: #C1694F22;
+    color: #2D6A4F;
   }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* ============================================================
+   GRAIN OVERLAY — Handmade paper texture
+   Applied via .grain class on sections
+   ============================================================ */
+.grain {
+  position: relative;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
 }
-.dark ::-webkit-scrollbar-track {
-  background: #0f172a;
-}
+
+/* ============================================================
+   SCROLLBAR — Forest green signature
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #FAF7F0; }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #74C69D;
+  border-radius: 999px;
 }
-.dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+::-webkit-scrollbar-thumb:hover { background: #2D6A4F; }
+
+/* ============================================================
+   ELEVATION SYSTEM — Warm shadows (not cold grays)
+   ============================================================ */
+.elevation-card {
+  box-shadow: 0 1px 4px rgba(45, 106, 79, 0.06), 0 1px 2px rgba(0,0,0,0.04);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+.elevation-float {
+  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.10), 0 2px 6px rgba(0,0,0,0.06);
+}
+.elevation-modal {
+  box-shadow: 0 24px 64px rgba(45, 106, 79, 0.15), 0 8px 24px rgba(0,0,0,0.08);
 }
 
-/* Custom Glassmorphism styles */
+/* ============================================================
+   GLASS NAV — Ivory-toned, warm blur
+   ============================================================ */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(250, 247, 240, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(45, 106, 79, 0.08);
 }
 
-.dark .glass {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+/* ============================================================
+   CARD — Ivory surface, forest shadow
+   ============================================================ */
+.card {
+  background: #FFFFFF;
+  border: 1px solid rgba(45, 106, 79, 0.10);
+  border-radius: 16px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  box-shadow: 0 1px 4px rgba(45, 106, 79, 0.06);
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(45, 106, 79, 0.12), 0 4px 12px rgba(0,0,0,0.06);
+}
+.card-warm {
+  background: #FAF7F0;
+  border: 1px solid rgba(193, 105, 79, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(193, 105, 79, 0.06);
 }
 
-/* Pulse animation skeleton loader */
+/* ============================================================
+   BUTTON SYSTEM — Forest + Terracotta
+   ============================================================ */
+.btn-forest {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 10px;
+  background: #2D6A4F;
+  color: #FAF7F0;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 8px rgba(45, 106, 79, 0.25), 0 1px 3px rgba(0,0,0,0.1);
+  text-decoration: none;
+}
+.btn-forest:hover {
+  background: #1f4d38;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 106, 79, 0.35), 0 2px 6px rgba(0,0,0,0.1);
+}
+.btn-forest:active { transform: translateY(0); }
+
+.btn-terracotta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 10px;
+  background: #C1694F;
+  color: #FAF7F0;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 8px rgba(193, 105, 79, 0.30), 0 1px 3px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+.btn-terracotta:hover {
+  background: #a8573f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(193, 105, 79, 0.40), 0 2px 6px rgba(0,0,0,0.1);
+}
+.btn-terracotta:active { transform: translateY(0); }
+/* Pulse ring on CTA */
+.btn-terracotta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  animation: cta-pulse 2.5s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes cta-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(193,105,79,0.5); }
+  70%  { box-shadow: 0 0 0 10px rgba(193,105,79,0); }
+  100% { box-shadow: 0 0 0 0 rgba(193,105,79,0); }
+}
+
+.btn-outline-ivory {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 30px;
+  border-radius: 10px;
+  border: 2px solid rgba(250, 247, 240, 0.5);
+  color: #FAF7F0;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+.btn-outline-ivory:hover {
+  background: rgba(250, 247, 240, 0.12);
+  border-color: rgba(250, 247, 240, 0.8);
+  transform: translateY(-1px);
+}
+
+/* Keep legacy btn-primary for other pages */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
+    bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
+    text-white font-semibold text-sm
+    transition-all duration-200;
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25), 0 4px 12px rgba(5, 150, 105, 0.15);
+}
+.btn-primary:hover {
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
+    border border-slate-300 dark:border-slate-700
+    text-slate-700 dark:text-slate-200
+    hover:bg-slate-50 dark:hover:bg-slate-800
+    font-semibold text-sm transition-all duration-200;
+}
+
+/* ============================================================
+   EDITORIAL SECTION LABEL — Forest left bar
+   ============================================================ */
+.section-label {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #2D6A4F;
+  font-family: 'DM Sans', sans-serif;
+}
+.section-label::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, #74C69D, #2D6A4F);
+  border-radius: 999px;
+}
+
+/* Terracotta variant */
+.section-label-terra {
+  color: #C1694F;
+}
+.section-label-terra::before {
+  background: linear-gradient(to bottom, #E9C46A, #C1694F);
+}
+
+/* ============================================================
+   SKELETON LOADER
+   ============================================================ */
 .skeleton {
-  @apply bg-slate-200 dark:bg-slate-700 animate-pulse rounded;
+  background: #EDE9DF;
+  border-radius: 12px;
+  background-image: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.6) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* Premium Button Animation */
+/* ============================================================
+   STAGGER ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-7px); }
+}
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: 120; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.anim-fade-up {
+  animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.anim-fade-up-1 { animation: fadeUp 0.7s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.anim-fade-up-2 { animation: fadeUp 0.7s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.anim-fade-up-3 { animation: fadeUp 0.7s 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.anim-fade-up-4 { animation: fadeUp 0.7s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.anim-fade-up-5 { animation: fadeUp 0.7s 0.65s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.anim-float { animation: floatY 4s ease-in-out infinite; }
+.anim-spin-slow { animation: spinSlow 18s linear infinite; }
+
+/* Scroll-triggered via IntersectionObserver — initial hidden state */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   STATS CARD — 3D tilt container
+   ============================================================ */
+.stats-card {
+  background: #FFFFFF;
+  border: 1.5px solid rgba(45, 106, 79, 0.12);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #74C69D, #2D6A4F);
+  border-radius: 20px 20px 0 0;
+}
+
+/* ============================================================
+   POLAROID FRAME — About section image
+   ============================================================ */
+.polaroid {
+  background: #fff;
+  padding: 12px 12px 40px 12px;
+  box-shadow: 0 8px 32px rgba(45,106,79,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  border-radius: 4px;
+  position: relative;
+}
+.polaroid::after {
+  content: '';
+  position: absolute;
+  bottom: 12px; left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(193,105,79,0.3), transparent);
+}
+
+/* ============================================================
+   SVG UNDERLINE HIGHLIGHT — Keyword decoration
+   ============================================================ */
+.highlight-word {
+  position: relative;
+  display: inline-block;
+}
+.highlight-word svg {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  overflow: visible;
+}
+.highlight-word svg path {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: drawLine 0.9s 0.5s ease-out forwards;
+}
+
+/* ============================================================
+   ORGANIC WAVE DIVIDER
+   ============================================================ */
+.wave-divider {
+  position: relative;
+  overflow: hidden;
+}
+.wave-divider svg {
+  display: block;
+  width: 100%;
+}
+
+/* ============================================================
+   PROGRESS BAR — Campaign funding
+   ============================================================ */
+.progress-track {
+  height: 6px;
+  background: rgba(45,106,79,0.10);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #74C69D, #2D6A4F);
+  border-radius: 999px;
+  transition: width 1s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ============================================================
+   TESTIMONIAL QUOTE MARKS
+   ============================================================ */
+.quote-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem;
+  line-height: 0.8;
+  color: rgba(45,106,79,0.15);
+  font-weight: 900;
+  user-select: none;
+}
+
+/* ============================================================
+   EDITORIAL BORDER (legacy compat)
+   ============================================================ */
+.editorial-border {
+  position: relative;
+  padding-left: 1rem;
+}
+.editorial-border::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, #74C69D, #2D6A4F);
+  border-radius: 999px;
+}
+
+/* ============================================================
+   SECTION DIVIDER
+   ============================================================ */
+.section-divider {
+  border-top: 1px solid rgba(45,106,79,0.1);
+  @apply my-2;
+}
+
+/* Light mode only — no dark mode toggle */
+
+/* ============================================================
+   LEGACY COMPAT
+   ============================================================ */
 .btn-premium {
   @apply relative overflow-hidden transition-all duration-300 transform active:scale-95;
-}
-
-.btn-premium::after {
-  content: '';
-  @apply absolute inset-0 bg-white opacity-0 transition-opacity duration-300;
-}
-
-.btn-premium:hover::after {
-  @apply opacity-10;
 }
