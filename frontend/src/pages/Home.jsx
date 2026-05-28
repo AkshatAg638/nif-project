@@ -226,16 +226,6 @@ export const Home = () => {
             style={{ height: '200px', background: 'linear-gradient(to top, #FAF7F0, transparent)' }}
           />
 
-          {/* Decorative rotating circle */}
-          <div
-            className="absolute top-20 right-10 opacity-20 anim-spin-slow pointer-events-none hidden lg:block"
-            style={{ width: 320, height: 320 }}
-          >
-            <svg viewBox="0 0 320 320" fill="none">
-              <circle cx="160" cy="160" r="155" stroke="#74C69D" strokeWidth="1" strokeDasharray="8 12" />
-              <circle cx="160" cy="160" r="120" stroke="#E9C46A" strokeWidth="0.5" strokeDasharray="4 16" />
-            </svg>
-          </div>
 
           {/* Floating blob top-right */}
           <OrgBlob
