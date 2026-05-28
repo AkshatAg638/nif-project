@@ -227,13 +227,6 @@ export const Home = () => {
           />
 
 
-          {/* Floating blob top-right */}
-          <OrgBlob
-            color="#74C69D"
-            opacity={0.08}
-            className="absolute top-0 right-0 w-96 h-96 pointer-events-none"
-          />
-
           {/* Hero content */}
           <div
             className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12"
