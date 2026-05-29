@@ -34,7 +34,8 @@ export const Login = () => {
         showToast('Two-Factor Authentication is required.', 'info');
       } else {
         showToast('Signed in successfully!', 'success');
-        navigate(redirectPath, { replace: true });
+        const targetPath = (res?.user && res.user.role === 'user') ? '/profile' : redirectPath;
+        navigate(targetPath, { replace: true });
       }
     } catch (err) {
       showToast(err || 'Failed to authenticate.', 'error');
@@ -49,9 +50,10 @@ export const Login = () => {
 
     setLoading(true);
     try {
-      await login2FA(tempToken, code);
+      const res = await login2FA(tempToken, code);
       showToast('2FA verification successful. Signed in!', 'success');
-      navigate(redirectPath, { replace: true });
+      const targetPath = (res?.user && res.user.role === 'user') ? '/profile' : redirectPath;
+      navigate(targetPath, { replace: true });
     } catch (err) {
       showToast(err || '2FA code verification failed', 'error');
     } finally {
@@ -69,7 +71,7 @@ export const Login = () => {
         {!is2faPending ? (
           <>
             <div className="space-y-2 text-center">
-              <h2 className="text-2xl font-black text-slate-850 dark:text-white">Admin Login</h2>
+              <h2 className="text-2xl font-black text-slate-850 dark:text-white">Welcome to Namokriti</h2>
               <p className="text-xs text-slate-400">Sign in to coordinate campaigns and moderate content.</p>
             </div>
 
@@ -92,9 +94,6 @@ export const Login = () => {
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <label className="text-xs font-semibold text-slate-500">Password</label>
-                  <Link to="/forgot-password" className="text-[11px] font-bold text-emerald-600 hover:underline">
-                    Forgot Password?
-                  </Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-3.5 text-slate-400" size={16} />
@@ -157,15 +156,6 @@ export const Login = () => {
               </div>
             </form>
           </>
-        )}
-
-        {!is2faPending && (
-          <div className="text-center text-xs text-slate-400 mt-4">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-bold text-emerald-600 hover:underline">
-              Register
-            </Link>
-          </div>
         )}
 
       </div>

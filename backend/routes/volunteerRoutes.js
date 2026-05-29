@@ -4,6 +4,7 @@ import {
   getVolunteers,
   updateVolunteerStatus,
   deleteVolunteer,
+  getMyVolunteerProfile,
 } from '../controllers/volunteerController.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
 import { validateVolunteer } from '../middleware/validationMiddleware.js';
@@ -13,12 +14,12 @@ const router = express.Router();
 
 router.post('/', validateVolunteer, applyVolunteer);
 
-// Protected routes (Admin / Editor)
-router.use(protect);
-router.use(authorize('super-admin', 'admin', 'editor'));
+// Protected routes (All logged-in users)
+router.get('/me', protect, getMyVolunteerProfile);
 
-router.get('/', getVolunteers);
-router.put('/:id', auditLogger('UPDATE_VOLUNTEER_STATUS'), updateVolunteerStatus);
-router.delete('/:id', auditLogger('DELETE_VOLUNTEER'), deleteVolunteer);
+// Protected routes (Admin / Editor)
+router.get('/', protect, authorize('super-admin', 'admin', 'editor'), getVolunteers);
+router.put('/:id', protect, authorize('super-admin', 'admin', 'editor'), auditLogger('UPDATE_VOLUNTEER_STATUS'), updateVolunteerStatus);
+router.delete('/:id', protect, authorize('super-admin', 'admin', 'editor'), auditLogger('DELETE_VOLUNTEER'), deleteVolunteer);
 
 export default router;

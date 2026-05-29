@@ -1,4 +1,5 @@
 import Volunteer from '../models/Volunteer.js';
+import User from '../models/User.js';
 
 // @desc    Apply as a volunteer
 // @route   POST /api/volunteers
@@ -42,14 +43,30 @@ export const updateVolunteerStatus = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid status value' });
     }
 
-    const volunteer = await Volunteer.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true, runValidators: true }
-    );
+    const volunteer = await Volunteer.findById(req.params.id);
 
     if (!volunteer) {
       return res.status(404).json({ success: false, message: 'Volunteer application not found' });
+    }
+
+    volunteer.status = status;
+    await volunteer.save();
+
+    // If approved, automatically create standard login credentials for the volunteer
+    if (status === 'approved') {
+      const emailLower = volunteer.email.toLowerCase();
+      const existingUser = await User.findOne({ email: emailLower });
+      if (!existingUser) {
+        // Password is exact phone number trimmed
+        const rawPassword = volunteer.phone.trim();
+        await User.create({
+          name: volunteer.name,
+          email: emailLower,
+          password: rawPassword,
+          role: 'user', // regular volunteer login role
+        });
+        console.log(`Auto-created credentials for approved volunteer: ${emailLower} / Pass: ${rawPassword}`);
+      }
     }
 
     res.status(200).json({ success: true, data: volunteer });
@@ -70,6 +87,21 @@ export const deleteVolunteer = async (req, res, next) => {
 
     await volunteer.deleteOne();
     res.status(200).json({ success: true, data: {} });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get current user's volunteer application details
+// @route   GET /api/volunteers/me
+// @access  Private
+export const getMyVolunteerProfile = async (req, res, next) => {
+  try {
+    const volunteer = await Volunteer.findOne({ email: req.user.email.toLowerCase() });
+    if (!volunteer) {
+      return res.status(404).json({ success: false, message: 'No volunteer profile found' });
+    }
+    res.status(200).json({ success: true, data: volunteer });
   } catch (error) {
     next(error);
   }

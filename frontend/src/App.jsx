@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Link } from 'react-router-dom';
 import Navbar from './components/common/Navbar.jsx';
 import Footer from './components/common/Footer.jsx';
 import ProtectedRoute from './components/common/ProtectedRoute.jsx';
+import WhatsAppButton from './components/common/WhatsAppButton.jsx';
 
 // Import Public Pages
 import Home from './pages/Home.jsx';
@@ -17,9 +18,6 @@ import Contact from './pages/Contact.jsx';
 
 // Import Auth Pages
 import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
-import ForgotPassword from './pages/ForgotPassword.jsx';
-import ResetPassword from './pages/ResetPassword.jsx';
 import Profile from './pages/Profile.jsx';
 
 // Import Legal Pages
@@ -57,9 +55,6 @@ export const App = () => {
 
           {/* Auth Routing */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
           
           <Route
             path="/profile"
@@ -104,6 +99,7 @@ export const App = () => {
       </div>
 
       {!isAdminPath && <Footer />}
+      {!isAdminPath && <WhatsAppButton />}
     </div>
   );
 };

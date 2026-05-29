@@ -45,15 +45,22 @@ export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
+    // Prevent registering with the predefined admin email
+    if (process.env.ADMIN_EMAIL && email.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Registration is not allowed for Admin credentials. Please log in directly.',
+      });
+    }
+
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ success: false, message: 'User already exists' });
     }
 
-    // First user is super-admin, others are normal users
-    const isFirstUser = (await User.countDocuments({})) === 0;
-    const role = isFirstUser ? 'super-admin' : 'user';
+    // All registered users are normal users (admin/super-admin roles are seeded or manually assigned)
+    const role = 'user';
 
     const user = await User.create({
       name,

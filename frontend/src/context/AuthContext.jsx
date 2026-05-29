@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         // Save token to header
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
         localStorage.setItem('token', res.data.token);
-        return { success: true };
+        return { success: true, user: res.data.user };
       }
     } catch (error) {
       throw error.response?.data?.message || 'Login failed';
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.user);
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
         localStorage.setItem('token', res.data.token);
-        return { success: true };
+        return { success: true, user: res.data.user };
       }
     } catch (error) {
       throw error.response?.data?.message || 'Invalid 2FA code';

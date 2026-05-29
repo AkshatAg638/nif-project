@@ -16,6 +16,7 @@ import {
   FileSpreadsheet,
   Terminal,
   User,
+  ClipboardList,
 } from 'lucide-react';
 import Meta from '../../components/common/Meta.jsx';
 
@@ -31,6 +32,7 @@ import ManageTeam from './ManageTeam.jsx';
 import ManageMessages from './ManageMessages.jsx';
 import AuditLogsView from './AuditLogsView.jsx';
 import CmsSettings from './CmsSettings.jsx';
+import ManageTasks from './ManageTasks.jsx';
 
 export const AdminDashboard = () => {
   const { user, loading, isAuthenticated, isAdmin, isEditor, logout } = useAuth();
@@ -66,6 +68,7 @@ export const AdminDashboard = () => {
     { id: 'events', label: 'Events', icon: Calendar, roles: ['super-admin', 'admin', 'editor'] },
     { id: 'blogs', label: 'Blogs', icon: FileSpreadsheet, roles: ['super-admin', 'admin', 'editor'] },
     { id: 'volunteers', label: 'Volunteers', icon: Users, roles: ['super-admin', 'admin'] },
+    { id: 'tasks', label: 'Assign Work', icon: ClipboardList, roles: ['super-admin', 'admin', 'editor'] },
     { id: 'gallery', label: 'Gallery Media', icon: Camera, roles: ['super-admin', 'admin', 'editor'] },
     { id: 'team', label: 'Team Directory', icon: User, roles: ['super-admin', 'admin'] },
     { id: 'messages', label: 'Messages', icon: Mail, roles: ['super-admin', 'admin'] },
@@ -83,6 +86,7 @@ export const AdminDashboard = () => {
       case 'events': return <ManageEvents />;
       case 'blogs': return <ManageBlogs />;
       case 'volunteers': return <ManageVolunteers />;
+      case 'tasks': return <ManageTasks />;
       case 'gallery': return <ManageGallery />;
       case 'team': return <ManageTeam />;
       case 'messages': return <ManageMessages />;

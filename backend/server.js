@@ -23,6 +23,7 @@ import teamRoutes from './routes/teamRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import donationRoutes from './routes/donationRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
+import taskRoutes from './routes/taskRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -87,6 +88,7 @@ app.use('/api/team', teamRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Test endpoint
 app.get('/', (req, res) => {

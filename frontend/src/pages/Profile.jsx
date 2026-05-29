@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import { User, KeyRound, ShieldAlert, Check, Copy } from 'lucide-react';
 import Meta from '../components/common/Meta.jsx';
+import VolunteerPortal from './VolunteerPortal.jsx';
 
 export const Profile = () => {
   const { user, checkUserSession } = useAuth();
@@ -15,6 +16,28 @@ export const Profile = () => {
   const [otpUrl, setOtpUrl] = useState('');
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [volunteerData, setVolunteerData] = useState(null);
+  const [volunteerLoading, setVolunteerLoading] = useState(false);
+
+  React.useEffect(() => {
+    if (user && user.role === 'user') {
+      const fetchVolunteerProfile = async () => {
+        setVolunteerLoading(true);
+        try {
+          const res = await axios.get('/api/volunteers/me');
+          if (res.data.success) {
+            setVolunteerData(res.data.data);
+          }
+        } catch (err) {
+          console.error('Failed to load volunteer profile:', err.message);
+        } finally {
+          setVolunteerLoading(false);
+        }
+      };
+      fetchVolunteerProfile();
+    }
+  }, [user]);
 
   const handleSetup2FA = async () => {
     setLoading(true);
@@ -77,6 +100,11 @@ export const Profile = () => {
     showToast('Secret key copied to clipboard!', 'info');
   };
 
+  if (!user) return null;
+
+  if (user.role === 'user') {
+    return <VolunteerPortal user={user} />;
+  }
   if (!user) return null;
 
   return (

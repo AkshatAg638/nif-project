@@ -7,8 +7,6 @@ import {
   setup2FA,
   confirm2FA,
   disable2FA,
-  forgotPassword,
-  resetPassword,
   logout,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -21,8 +19,6 @@ router.post('/register', strictLimiter, validateRegister, register);
 router.post('/login', strictLimiter, validateLogin, login);
 router.post('/verify-2fa', strictLimiter, verify2FALogin);
 router.get('/logout', logout);
-router.post('/forgotpassword', forgotPassword);
-router.put('/resetpassword/:resettoken', resetPassword);
 
 // Protected routes
 router.get('/me', protect, getMe);
