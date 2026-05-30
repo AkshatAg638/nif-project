@@ -11,20 +11,12 @@ import { auditLogger } from '../middleware/auditLogger.js';
 import upload from '../middleware/uploadMiddleware.js';
 
 // Define a middleware-friendly router that parses user context optionally for drafts access
-import { protect as optionalProtect } from '../middleware/authMiddleware.js';
+import { optionalProtect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-const checkUserSessionQuiet = async (req, res, next) => {
-  // Silent auth session parsing to handle public/draft views correctly
-  try {
-    await optionalProtect(req, res, () => {});
-  } catch (err) {}
-  next();
-};
-
-router.route('/').get(checkUserSessionQuiet, getBlogs);
-router.route('/:identifier').get(checkUserSessionQuiet, getBlog);
+router.route('/').get(optionalProtect, getBlogs);
+router.route('/:identifier').get(optionalProtect, getBlog);
 
 // Protected routes (Admin / Editor)
 router.use(protect);
