@@ -226,8 +226,9 @@ app.use(suspiciousRequestDetector);
 
 // ─── 16. Mount API Routes ─────────────────────────────────────────────────────
 
-// Auth routes — strict rate limiting (prevents brute force)
-app.use('/api/auth', strictLimiter, authRoutes);
+// Auth routes — strict rate limiting is applied per-route inside authRoutes.js
+// (login, register, verify-2fa). Session check (/me) must NOT be rate-limited.
+app.use('/api/auth', authRoutes);
 
 // Public API routes
 app.use('/api/users', userRoutes);

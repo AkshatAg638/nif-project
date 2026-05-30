@@ -44,7 +44,7 @@ export const Donate = () => {
   const [phone, setPhone] = useState('');
   const [amount, setAmount] = useState('');
   const [purpose, setPurpose] = useState('');
-  const [paymentGateway, setPaymentGateway] = useState('stripe');
+  const [paymentGateway, setPaymentGateway] = useState('razorpay');
   const [isRecurring, setIsRecurring] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
@@ -417,20 +417,7 @@ export const Donate = () => {
                 <h3 className="text-lg font-bold text-[#1a2e22]">Secure Gateway</h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setPaymentGateway('stripe')}
-                  style={{
-                    background: '#FAF7F0',
-                    borderColor: paymentGateway === 'stripe' ? '#2D6A4F' : 'rgba(45,106,79,0.15)',
-                    borderWidth: paymentGateway === 'stripe' ? '2px' : '1px',
-                  }}
-                  className="p-5 rounded-2xl border flex flex-col items-center gap-2 transition-all hover:scale-[1.01] hover:shadow-sm cursor-pointer"
-                >
-                  <CreditCard size={20} className={paymentGateway === 'stripe' ? 'text-[#2D6A4F]' : 'text-[#4a6355]'} />
-                  <span className={`text-xs font-bold ${paymentGateway === 'stripe' ? 'text-[#2D6A4F]' : 'text-[#4a6355]'}`}>Stripe Cards</span>
-                </button>
+              <div className="grid grid-cols-1 gap-4">
 
                 <button
                   type="button"

@@ -9,6 +9,13 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserSession = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      } else {
+        delete axios.defaults.headers.common['Authorization'];
+      }
+      
       const res = await axios.get('/api/auth/me');
       if (res.data.success) {
         setUser(res.data.user);
@@ -82,13 +89,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Restore token from localStorage on initialization if it exists
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-  }, []);
+
 
   return (
     <AuthContext.Provider

@@ -77,8 +77,8 @@ export const Contact = () => {
             </div>
             <div>
               <span className="block text-xs font-semibold text-slate-400 uppercase">Phone contact</span>
-              <a href="tel:+919876543210" className="text-sm font-bold text-slate-800 dark:text-white hover:underline">
-                +91 98765 43210
+              <a href="tel:+917417295599" className="text-sm font-bold text-slate-800 dark:text-white hover:underline">
+                +91 74172 95599
               </a>
             </div>
           </div>
@@ -90,7 +90,9 @@ export const Contact = () => {
             <div>
               <span className="block text-xs font-semibold text-slate-400 uppercase">Head Office</span>
               <span className="text-sm font-bold text-slate-800 dark:text-white">
-                12, Peace Plaza, New Delhi, India
+                Mayur Jewellers<br></br>
+                Chowk Bazar, Mathura(281001),<br></br>
+                Uttar Pradesh, India
               </span>
             </div>
           </div>
@@ -99,7 +101,7 @@ export const Contact = () => {
           <div className="rounded-3xl overflow-hidden border shadow-sm h-64 bg-slate-100">
             <iframe
               title="Namokriti Head Office"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.5620638531233!2d77.2272893!3d28.6139391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x37205b715389640!2sIndia%20Gate!5e0!3m2!1sen!2sin!4v1716766439000!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13994.165479167912!2d77.70476631625866!3d27.481213944393668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39747689f46e369f%3A0x5f1a6f40a856b40b!2sShree%20Chowk%20Bazar!5e0!3m2!1sen!2sin!4v1748687212412!5m2!1sen!2sin"
               className="w-full h-full border-0 grayscale opacity-80"
               allowFullScreen=""
               loading="lazy"
@@ -113,7 +115,7 @@ export const Contact = () => {
           className="lg:col-span-3 bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl space-y-5"
         >
           <h3 className="text-xl font-bold text-slate-850 dark:text-white">Send Inquiry Message</h3>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-500">Your Name</label>
