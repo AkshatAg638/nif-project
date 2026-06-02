@@ -1,8 +1,33 @@
 import PDFDocument from 'pdfkit';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Resolve path to the Namokriti Foundation logo (seal)
+const LOGO_PATH = path.resolve(__dirname, '../assets/logo.jpeg');
+
+// Brand colours
+const FOREST = '#2D6A4F';
+const TERRA = '#C1694F';
+const DARK = '#1a2e22';
+const MUTED = '#4a6355';
+const LIGHT_MUTED = '#6b8c7a';
+const IVORY = '#FAF7F0';
+const BORDER = '#d4ddd8';
 
 /**
- * Generates a donation receipt PDF buffer.
- * @param {Object} donation Donation document from MongoDB
+ * Draws a horizontal rule across the page.
+ */
+function hr(doc, y, color = BORDER, width = 0.8) {
+  doc.strokeColor(color).lineWidth(width).moveTo(50, y).lineTo(545, y).stroke();
+}
+
+/**
+ * Generates a professional donation receipt PDF with the Namokriti Foundation seal.
+ * @param {Object} donation  Donation document from MongoDB
  * @returns {Promise<Buffer>} Resolves with PDF file buffer
  */
 export const generateDonationReceiptPDF = (donation) => {
@@ -12,100 +37,286 @@ export const generateDonationReceiptPDF = (donation) => {
       const buffers = [];
 
       doc.on('data', buffers.push.bind(buffers));
-      doc.on('end', () => {
-        const pdfData = Buffer.concat(buffers);
-        resolve(pdfData);
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+
+      const receiptId = donation.receiptNumber || `REC-${donation._id.toString().substring(18).toUpperCase()}`;
+      const donationDate = new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
       });
 
-      // Branding Header
-      doc.fillColor('#0d9488').fontSize(22).text('Namokriti International Foundation', { align: 'center' });
-      doc.fillColor('#475569').fontSize(10).text('Empowering Communities, Transforming Lives', { align: 'center' });
-      doc.moveDown(0.5);
-      doc.fontSize(9).text('Regd. Office: 12, Peace Plaza, New Delhi, India | Contact: contact@namokriti.org', { align: 'center' });
-      
-      // Divider
-      doc.moveDown(1);
-      doc.strokeColor('#e2e8f0').lineWidth(1).moveTo(50, doc.y).lineTo(545, doc.y).stroke();
-      doc.moveDown(1.5);
+      // ─── HEADER: Logo + Foundation Name ───────────────────────────
+      const logoExists = fs.existsSync(LOGO_PATH);
+      const headerY = 45;
 
-      // Receipt Title
-      doc.fillColor('#0f172a').fontSize(16).text('DONATION RECEIPT', { align: 'center', underline: true });
-      doc.moveDown(1.5);
+      if (logoExists) {
+        doc.image(LOGO_PATH, 50, headerY, { width: 60, height: 60 });
+      }
 
-      // Metadata Table
-      const leftColX = 50;
-      const rightColX = 320;
-      const startY = doc.y;
+      const textX = logoExists ? 120 : 50;
 
-      doc.fontSize(10).fillColor('#64748b').text('Receipt Number:', leftColX);
-      doc.fillColor('#0f172a').text(`REC-${donation._id.toString().substring(18).toUpperCase()}`, leftColX + 90, startY);
+      doc
+        .fillColor(FOREST)
+        .fontSize(18)
+        .font('Helvetica-Bold')
+        .text('Namokriti International Foundation', textX, headerY + 5, { width: 420 });
 
-      doc.fillColor('#64748b').text('Date:', rightColX);
-      doc.fillColor('#0f172a').text(new Date(donation.createdAt).toLocaleDateString(), rightColX + 60, startY);
+      doc
+        .fillColor(MUTED)
+        .fontSize(7.5)
+        .font('Helvetica')
+        .text(
+          'Regd. Office: Mathura, Uttar Pradesh, India  |  contact@namokriti.org  |  www.namokriti.org',
+          textX,
+          headerY + 28,
+          { width: 420 }
+        );
 
-      doc.moveDown(0.8);
-      const nextY = doc.y;
+      // ─── Top border accent ────────────────────────────────────────
+      doc.save();
+      doc
+        .rect(50, headerY + 48, 495, 3)
+        .fill(FOREST);
+      doc.restore();
 
-      doc.fillColor('#64748b').text('Donor Name:', leftColX);
-      doc.fillColor('#0f172a').text(donation.name, leftColX + 90, nextY);
+      let currentY = headerY + 64;
 
-      doc.fillColor('#64748b').text('Payment Mode:', rightColX);
-      doc.fillColor('#0f172a').text(donation.paymentGateway.toUpperCase(), rightColX + 80, nextY);
+      // ─── RECEIPT TITLE ────────────────────────────────────────────
+      doc
+        .fillColor(DARK)
+        .fontSize(15)
+        .font('Helvetica-Bold')
+        .text('DONATION RECEIPT', 50, currentY, { align: 'center', width: 495 });
 
-      doc.moveDown(0.8);
-      const thirdY = doc.y;
+      currentY += 22;
 
-      doc.fillColor('#64748b').text('Donor Email:', leftColX);
-      doc.fillColor('#0f172a').text(donation.email, leftColX + 90, thirdY);
+      doc
+        .fillColor(LIGHT_MUTED)
+        .fontSize(8)
+        .font('Helvetica')
+        .text(`Receipt No: ${receiptId}  •  Date: ${donationDate}`, 50, currentY, {
+          align: 'center',
+          width: 495,
+        });
 
-      doc.fillColor('#64748b').text('Transaction ID:', rightColX);
-      doc.fillColor('#0f172a').text(donation.paymentId || 'Pending/N/A', rightColX + 80, thirdY);
+      currentY += 22;
+      hr(doc, currentY);
+      currentY += 16;
 
-      doc.moveDown(1.5);
-      doc.strokeColor('#e2e8f0').lineWidth(1).moveTo(50, doc.y).lineTo(545, doc.y).stroke();
-      doc.moveDown(1.5);
+      // ─── DONOR DETAILS TABLE ──────────────────────────────────────
+      doc
+        .fillColor(FOREST)
+        .fontSize(10)
+        .font('Helvetica-Bold')
+        .text('Donor Information', 50, currentY);
+      currentY += 18;
 
-      // Donation Breakdown Table
-      doc.fontSize(11).fillColor('#0d9488').text('Donation Details', { underline: true });
-      doc.moveDown(0.8);
+      const labelX = 55;
+      const valueX = 180;
+      const rightLabelX = 320;
+      const rightValueX = 430;
 
-      const tableTop = doc.y;
-      doc.fontSize(10).fillColor('#475569');
-      doc.text('Purpose / Campaign', leftColX);
-      doc.text('Amount', rightColX + 150, tableTop, { width: 80, align: 'right' });
+      // Row 1
+      doc.font('Helvetica').fontSize(9).fillColor(LIGHT_MUTED).text('Donor Name:', labelX, currentY);
+      doc.font('Helvetica-Bold').fillColor(DARK).text(donation.name, valueX, currentY);
 
-      doc.moveDown(0.5);
-      doc.strokeColor('#f1f5f9').lineWidth(1).moveTo(50, doc.y).lineTo(545, doc.y).stroke();
-      doc.moveDown(0.5);
+      doc.font('Helvetica').fillColor(LIGHT_MUTED).text('Receipt No:', rightLabelX, currentY);
+      doc.font('Helvetica-Bold').fillColor(DARK).text(receiptId, rightValueX, currentY);
+      currentY += 18;
 
-      const itemY = doc.y;
-      doc.fillColor('#0f172a');
-      doc.text(donation.purpose, leftColX);
-      doc.text(`${donation.currency || 'INR'} ${donation.amount.toFixed(2)}`, rightColX + 150, itemY, { width: 80, align: 'right' });
+      // Row 2
+      doc.font('Helvetica').fillColor(LIGHT_MUTED).text('Email:', labelX, currentY);
+      doc.font('Helvetica-Bold').fillColor(DARK).text(donation.email, valueX, currentY);
 
-      doc.moveDown(1.5);
-      doc.strokeColor('#e2e8f0').lineWidth(1).moveTo(50, doc.y).lineTo(545, doc.y).stroke();
-      doc.moveDown(1.5);
+      doc.font('Helvetica').fillColor(LIGHT_MUTED).text('Date:', rightLabelX, currentY);
+      doc.font('Helvetica-Bold').fillColor(DARK).text(donationDate, rightValueX, currentY);
+      currentY += 18;
 
-      // Total Section
-      const totalY = doc.y;
-      doc.fontSize(12).fillColor('#0d9488').text('Total Received:', rightColX + 40, totalY);
-      doc.fillColor('#0f172a').text(`${donation.currency || 'INR'} ${donation.amount.toFixed(2)}`, rightColX + 150, totalY, { width: 80, align: 'right' });
+      // Row 3
+      doc.font('Helvetica').fillColor(LIGHT_MUTED).text('Phone:', labelX, currentY);
+      doc.font('Helvetica-Bold').fillColor(DARK).text(donation.phone || 'N/A', valueX, currentY);
 
-      doc.moveDown(2);
+      doc.font('Helvetica').fillColor(LIGHT_MUTED).text('Payment Mode:', rightLabelX, currentY);
+      doc
+        .font('Helvetica-Bold')
+        .fillColor(DARK)
+        .text((donation.paymentGateway || 'N/A').toUpperCase(), rightValueX, currentY);
+      currentY += 18;
 
-      // Tax Exemption Disclaimer
-      doc.fillColor('#475569').fontSize(9).text('Tax Exemption: All contributions made to Namokriti International Foundation are tax-exempt under Section 80G of the Income Tax Act (or matching international treaties). Please keep this receipt for tax reporting purposes.', { align: 'justify', lineGap: 3 });
+      // Row 4
+      doc.font('Helvetica').fillColor(LIGHT_MUTED).text('Transaction ID:', labelX, currentY);
+      doc
+        .font('Helvetica-Bold')
+        .fillColor(DARK)
+        .text(donation.paymentId || 'Pending', valueX, currentY, { width: 350 });
+      currentY += 24;
 
-      doc.moveDown(2);
+      hr(doc, currentY);
+      currentY += 16;
 
-      // Signature / Thank you
-      doc.fontSize(10).fillColor('#0f172a').text('Thank you for your generous support!', { align: 'center', oblique: true });
-      
-      doc.moveDown(1.5);
-      const sigY = doc.y;
-      doc.text('Authorized Signatory', rightColX + 100, sigY, { align: 'center' });
-      doc.fontSize(8).fillColor('#64748b').text('Namokriti International Foundation', rightColX + 100, sigY + 12, { align: 'center' });
+      // ─── DONATION BREAKDOWN TABLE ─────────────────────────────────
+      doc
+        .fillColor(FOREST)
+        .fontSize(10)
+        .font('Helvetica-Bold')
+        .text('Donation Details', 50, currentY);
+      currentY += 20;
+
+      // Table header
+      doc.save();
+      doc.rect(50, currentY, 495, 22).fill('#e8f0ec');
+      doc.restore();
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(8.5)
+        .fillColor(FOREST)
+        .text('PURPOSE / CAMPAIGN', 60, currentY + 6)
+        .text('CURRENCY', 360, currentY + 6)
+        .text('AMOUNT', 460, currentY + 6, { width: 75, align: 'right' });
+
+      currentY += 28;
+
+      // Table row
+      doc
+        .font('Helvetica')
+        .fontSize(9.5)
+        .fillColor(DARK)
+        .text(donation.purpose || 'General Contribution', 60, currentY);
+
+      doc.text(donation.currency || 'INR', 360, currentY);
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(10)
+        .text(`₹${donation.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 460, currentY, {
+          width: 75,
+          align: 'right',
+        });
+
+      currentY += 22;
+      hr(doc, currentY, BORDER, 0.5);
+      currentY += 12;
+
+      // Total row
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(10)
+        .fillColor(FOREST)
+        .text('Total Received:', 340, currentY);
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(12)
+        .fillColor(DARK)
+        .text(
+          `₹${donation.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+          460,
+          currentY - 1,
+          { width: 75, align: 'right' }
+        );
+
+      currentY += 30;
+      hr(doc, currentY);
+      currentY += 18;
+
+      // ─── TAX EXEMPTION NOTICE ─────────────────────────────────────
+      // Green tinted box
+      doc.save();
+      doc.roundedRect(50, currentY, 495, 52, 4).fill('#f0f9f4');
+      doc
+        .rect(50, currentY, 4, 52)
+        .fill(FOREST);
+      doc.restore();
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(8)
+        .fillColor(FOREST)
+        .text('TAX EXEMPTION NOTICE', 64, currentY + 8);
+
+      doc
+        .font('Helvetica')
+        .fontSize(7.5)
+        .fillColor(MUTED)
+        .text(
+          'All contributions made to Namokriti International Foundation are eligible for tax deduction under Section 80G of the Income Tax Act, 1961 (or applicable international treaties). Please retain this receipt for your tax filing records. This is a computer-generated receipt and does not require a physical signature.',
+          64,
+          currentY + 22,
+          { width: 470, lineGap: 2 }
+        );
+
+      currentY += 68;
+
+      // ─── WATERMARK SEAL (logo as translucent seal in center) ──────
+      if (logoExists) {
+        doc.save();
+        doc.opacity(0.06);
+        doc.image(LOGO_PATH, 175, 280, { width: 250, height: 250 });
+        doc.restore();
+      }
+
+      // ─── SIGNATURE BLOCK ──────────────────────────────────────────
+      currentY += 20;
+
+      // Thank you message
+      doc
+        .font('Helvetica-Oblique')
+        .fontSize(10)
+        .fillColor(DARK)
+        .text('Thank you for your generous support!', 50, currentY, {
+          align: 'center',
+          width: 495,
+        });
+
+      currentY += 35;
+
+      // Signature section with seal
+      if (logoExists) {
+        doc.image(LOGO_PATH, 400, currentY, { width: 45, height: 45 });
+      }
+
+      // Signature line
+      hr(doc, currentY + 50, MUTED, 0.6);
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(9)
+        .fillColor(DARK)
+        .text('Authorized Signatory', 380, currentY + 56, { width: 120, align: 'center' });
+
+      doc
+        .font('Helvetica')
+        .fontSize(7)
+        .fillColor(LIGHT_MUTED)
+        .text('Namokriti International Foundation', 380, currentY + 68, {
+          width: 120,
+          align: 'center',
+        });
+
+      // ─── FOOTER ───────────────────────────────────────────────────
+      const footerY = 760;
+      hr(doc, footerY, BORDER, 0.5);
+
+      doc
+        .font('Helvetica')
+        .fontSize(6.5)
+        .fillColor(LIGHT_MUTED)
+        .text(
+          `Namokriti International Foundation  •  Receipt ${receiptId}  •  Generated on ${new Date().toLocaleDateString('en-IN')}`,
+          50,
+          footerY + 8,
+          { align: 'center', width: 495 }
+        );
+
+      doc
+        .text(
+          'This is a system-generated document. For queries, contact contact@namokriti.org',
+          50,
+          footerY + 20,
+          { align: 'center', width: 495 }
+        );
 
       doc.end();
     } catch (error) {

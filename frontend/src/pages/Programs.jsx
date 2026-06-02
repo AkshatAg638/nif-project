@@ -50,23 +50,13 @@ export const Programs = () => {
     {
       category: 'Healthcare Access',
       title: 'Arogya Rural Diagnosis Camps',
-      description: 'Deploying mobile medical vans, funding direct village medicine centers, and conducting regular specialist diagnosis camps in remote sectors.',
+      description: 'Funding direct village medicine centers, and conducting regular specialist diagnosis camps in remote sectors.',
       image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=600&auto=format',
       impactMetrics: [
-        { label: 'Patients Treated', value: '35,000+' },
-        { label: 'Free Mobile Vans', value: '140+' },
+        { label: 'Patients Treated', value: '1000+' },
+        { label: 'Camps organised', value: '5+' }
       ],
-    },
-    {
-      category: 'Women Empowerment',
-      title: 'Udyami Craft & Tailoring Centers',
-      description: 'Equipping women with textile design knowledge, providing sewing starters, and guiding self-help groups to build independent local businesses.',
-      image: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=600&auto=format',
-      impactMetrics: [
-        { label: 'Women Equipped', value: '4,200+' },
-        { label: 'Micro-Businesses', value: '850' },
-      ],
-    },
+    }
   ];
 
   return (

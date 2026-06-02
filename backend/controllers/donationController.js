@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import Razorpay from 'razorpay';
 import Donation from '../models/Donation.js';
 import Project from '../models/Project.js';
+import Counter from '../models/Counter.js';
 import { sendEmail } from '../utils/email.js';
 import { generateDonationReceiptPDF as genPDF } from '../utils/receiptGenerator.js';
 
@@ -13,34 +14,43 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET || 'mock_key_secret',
 });
 
-// Helper: Post-payment processing (email + pdf)
+// Helper: Post-payment processing (serial receipt + email + pdf)
 const finalizeDonation = async (donation) => {
   try {
+    // Assign serial receipt number (NIF-0001, NIF-0002, ...)
+    if (!donation.receiptNumber) {
+      const seq = await Counter.getNextSequence('receipt');
+      donation.receiptNumber = `NIF-${String(seq).padStart(4, '0')}`;
+      await donation.save();
+    }
+
+    const receiptNo = donation.receiptNumber;
+
     // Generate PDF receipt
     const pdfBuffer = await genPDF(donation);
 
     // Send thank you email with PDF attachment
     await sendEmail({
       email: donation.email,
-      subject: `Thank you for your donation to Namokriti - Receipt #${donation._id.toString().substring(18).toUpperCase()}`,
-      message: `Dear ${donation.name},\n\nThank you so much for your donation of ${donation.currency} ${donation.amount.toFixed(2)} for ${donation.purpose}. Your contribution makes a major difference.\n\nPlease find your official tax receipt attached to this email.`,
+      subject: `Thank you for your donation to Namokriti — Receipt ${receiptNo}`,
+      message: `Dear ${donation.name},\n\nThank you so much for your donation of ${donation.currency} ${donation.amount.toFixed(2)} for ${donation.purpose}. Your contribution makes a major difference.\n\nPlease find your official tax receipt (${receiptNo}) attached to this email.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-          <h2 style="color: #0d9488; text-align: center;">Thank You, ${donation.name}!</h2>
+          <h2 style="color: #2D6A4F; text-align: center;">Thank You, ${donation.name}!</h2>
           <p>Your contribution of <strong>${donation.currency} ${donation.amount.toFixed(2)}</strong> to <strong>Namokriti International Foundation</strong> has been successfully received.</p>
           <p><strong>Purpose:</strong> ${donation.purpose}</p>
-          <p><strong>Receipt ID:</strong> REC-${donation._id.toString().substring(18).toUpperCase()}</p>
-          <div style="margin: 20px 0; padding: 15px; background: #f8fafc; border-left: 4px solid #0d9488; font-size: 14px; color: #475569;">
+          <p><strong>Receipt No:</strong> ${receiptNo}</p>
+          <div style="margin: 20px 0; padding: 15px; background: #f0f9f4; border-left: 4px solid #2D6A4F; font-size: 14px; color: #475569;">
             All donations are tax-exempt under Section 80G of the Income Tax Act. Your receipt is attached as a PDF.
           </div>
           <p style="text-align: center; color: #64748b; font-size: 12px; margin-top: 30px;">
-            Namokriti International Foundation &copy; 2026. All rights reserved.
+            Namokriti International Foundation &copy; ${new Date().getFullYear()}. All rights reserved.
           </p>
         </div>
       `,
       attachments: [
         {
-          filename: `receipt_REC-${donation._id.toString().substring(18).toUpperCase()}.pdf`,
+          filename: `Namokriti_Receipt_${receiptNo}.pdf`,
           content: pdfBuffer,
           contentType: 'application/pdf',
         },

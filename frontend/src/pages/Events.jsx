@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, Clock, MapPin, Search, Check, X, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, Search, Check, X, ArrowRight, Images, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useToast } from '../context/ToastContext.jsx';
 import Meta from '../components/common/Meta.jsx';
 
@@ -31,6 +31,9 @@ export const Events = () => {
   const [rsvpEventId, setRsvpEventId] = useState(null);
   const [rsvpEmail, setRsvpEmail] = useState('');
   const [rsvpLoading, setRsvpLoading] = useState(false);
+
+  // Detail Modal state (for past concluded events)
+  const [detailEvent, setDetailEvent] = useState(null);
 
   const fetchEvents = async () => {
     setLoading(true);
@@ -176,7 +179,8 @@ export const Events = () => {
           {events.map((ev) => (
             <div
               key={ev._id}
-              className="group flex flex-col justify-between space-y-6"
+              className={`group flex flex-col justify-between space-y-6 ${timeFilter === 'past' ? 'cursor-pointer' : ''}`}
+              onClick={timeFilter === 'past' ? () => setDetailEvent(ev) : undefined}
             >
               {/* Image Section */}
               <div className="relative overflow-hidden rounded-2xl border border-[#2D6A4F]/10">
@@ -227,9 +231,13 @@ export const Events = () => {
                     <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
                   </button>
                 ) : (
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#6b8c7a]">
-                    Concluded
-                  </span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setDetailEvent(ev); }}
+                    className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#2D6A4F] group-hover:text-[#1a2e22] transition-colors cursor-pointer"
+                  >
+                    <span>View Details</span>
+                    <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+                  </button>
                 )}
               </div>
             </div>
@@ -289,6 +297,134 @@ export const Events = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Event Detail Modal — for past concluded events */}
+      {detailEvent && (
+        <div
+          className="fixed inset-0 z-50 bg-[#1a2e22]/60 backdrop-blur-md flex items-center justify-center p-4"
+          onClick={() => setDetailEvent(null)}
+        >
+          <div
+            className="bg-[#FAF7F0] max-w-2xl w-full rounded-2xl border border-[#2D6A4F]/15 shadow-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setDetailEvent(null)}
+              className="absolute top-4 right-4 z-10 p-2 bg-[#FAF7F0]/90 backdrop-blur-md text-[#4a6355] hover:text-[#1a2e22] rounded-full border border-[#2D6A4F]/10 transition-colors cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Hero Image */}
+            <div className="relative">
+              <img
+                src={detailEvent.image}
+                alt={detailEvent.title}
+                className="w-full h-64 sm:h-72 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1a2e22]/70 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-6 right-6">
+                <span className="inline-block px-2.5 py-1 bg-[#FAF7F0]/90 backdrop-blur-md border border-[#2D6A4F]/10 text-[#2D6A4F] text-[9px] font-bold uppercase tracking-widest rounded-lg mb-2">
+                  {detailEvent.category}
+                </span>
+                <h3
+                  className="text-2xl sm:text-3xl font-black text-white leading-tight"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {detailEvent.title}
+                </h3>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 sm:p-8 space-y-6">
+              {/* Event meta info */}
+              <div className="flex flex-wrap gap-4 sm:gap-6 p-4 rounded-xl bg-[#2D6A4F]/5 border border-[#2D6A4F]/10">
+                <div className="flex items-center gap-2.5 text-sm text-[#4a6355]">
+                  <div className="p-1.5 rounded-lg bg-[#C1694F]/10">
+                    <Calendar size={15} className="text-[#C1694F]" />
+                  </div>
+                  <span className="font-semibold">
+                    {new Date(detailEvent.date).toLocaleDateString('en-IN', {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2.5 text-sm text-[#4a6355]">
+                  <div className="p-1.5 rounded-lg bg-[#2D6A4F]/10">
+                    <Clock size={15} className="text-[#2D6A4F]" />
+                  </div>
+                  <span className="font-semibold">{detailEvent.time}</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-sm text-[#4a6355]">
+                  <div className="p-1.5 rounded-lg bg-[#2D6A4F]/10">
+                    <MapPin size={15} className="text-[#2D6A4F]" />
+                  </div>
+                  <span className="font-semibold">{detailEvent.venue}</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-[#2D6A4F]">
+                  About This Event
+                </span>
+                <p className="text-sm text-[#4a6355] leading-relaxed">
+                  {detailEvent.description}
+                </p>
+              </div>
+
+              {/* Gallery photos (if the event has gallery images) */}
+              {detailEvent.gallery && detailEvent.gallery.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Images size={14} className="text-[#C1694F]" />
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#2D6A4F]">
+                      Event Gallery ({detailEvent.gallery.length} Photos)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {detailEvent.gallery.map((imgUrl, idx) => (
+                      <div
+                        key={idx}
+                        className="relative overflow-hidden rounded-xl border border-[#2D6A4F]/10 group/img cursor-pointer"
+                        onClick={() => window.open(imgUrl, '_blank')}
+                      >
+                        <img
+                          src={imgUrl}
+                          alt={`${detailEvent.title} — Photo ${idx + 1}`}
+                          className="w-full h-36 sm:h-44 object-cover transition-transform duration-500 group-hover/img:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-300" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Concluded badge */}
+              <div className="flex items-center justify-between pt-4 border-t border-[#2D6A4F]/10">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#6b8c7a] inline-block" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#6b8c7a]">
+                    Event Concluded
+                  </span>
+                </div>
+                <button
+                  onClick={() => setDetailEvent(null)}
+                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#4a6355] hover:text-[#1a2e22] transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

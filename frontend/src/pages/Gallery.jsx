@@ -16,6 +16,7 @@ export const Gallery = () => {
     'Healthcare',
     'Women Empowerment',
     'Environment',
+    'Disaster Relief',
     'Events',
   ];
 
@@ -39,6 +40,10 @@ export const Gallery = () => {
   }, [category]);
 
   const defaultMockMedia = [
+    { url: '/images/events/flood-relief-mathura-2025/boat-supplies-distribution.jpg', mediaType: 'image', category: 'Disaster Relief', caption: 'NIF volunteers transporting food supplies via boat through floodwaters — Koila Wala Gaon, Mathura (9 Sep 2025)' },
+    { url: '/images/events/flood-relief-mathura-2025/street-food-distribution.jpg', mediaType: 'image', category: 'Disaster Relief', caption: 'Door-to-door distribution of fruits, poori & packaged food in flooded streets — Refinery Town, Mathura (9 Sep 2025)' },
+    { url: '/images/events/flood-relief-mathura-2025/doorstep-relief.jpg', mediaType: 'image', category: 'Disaster Relief', caption: 'Volunteer handing bananas to a resident stranded in waist-deep floodwater — Koila Wala Gaon, Mathura (9 Sep 2025)' },
+    { url: '/images/events/flood-relief-mathura-2025/team-coordination.jpg', mediaType: 'image', category: 'Disaster Relief', caption: 'NIF team coordinating food relief with local residents amid heavy flooding — Mathura (9 Sep 2025)' },
     { url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600', mediaType: 'image', category: 'Education', caption: 'Donation of books and supplies.' },
     { url: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=600', mediaType: 'image', category: 'Women Empowerment', caption: 'Sewing workshop for ladies.' },
     { url: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=600', mediaType: 'image', category: 'Healthcare', caption: 'Mobile health checkup camp.' },
@@ -96,7 +101,10 @@ export const Gallery = () => {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {(items.length === 0 ? defaultMockMedia : items).map((item, index) => (
+          {(items.length === 0
+            ? (category ? defaultMockMedia.filter(m => m.category === category) : defaultMockMedia)
+            : items
+          ).map((item, index) => (
             <div
               key={index}
               onClick={() => setActiveMedia(item)}

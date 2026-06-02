@@ -52,6 +52,10 @@ const donationSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    receiptNumber: {
+      type: String,
+      default: null,
+    },
     isRecurring: {
       type: Boolean,
       default: false,
