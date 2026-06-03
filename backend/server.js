@@ -1,4 +1,6 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -33,6 +35,9 @@ import settingsRoutes from './routes/settingsRoutes.js';
 import donationRoutes from './routes/donationRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load env vars FIRST before any other config
 dotenv.config();
@@ -89,6 +94,9 @@ app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
 // ─── 8. Cookie Parser ────────────────────────────────────────────────────────
 app.use(cookieParser(process.env.COOKIE_SECRET || process.env.JWT_SECRET));
+
+// Expose public folder statically
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // ─── 9. Helmet — Full Production Security Headers ────────────────────────────
 app.use(

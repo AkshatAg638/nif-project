@@ -8,6 +8,7 @@ import {
   getDonations,
   exportDonationsCSV,
   getStats,
+  getDonationById,
 } from '../controllers/donationController.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
 import { validateDonation } from '../middleware/validationMiddleware.js';
@@ -19,6 +20,7 @@ const router = express.Router();
 router.post('/checkout/stripe', globalLimiter, validateDonation, checkoutStripe);
 router.post('/checkout/razorpay', globalLimiter, validateDonation, checkoutRazorpay);
 router.post('/verify/razorpay', globalLimiter, verifyRazorpayPayment);
+router.get('/:id', globalLimiter, getDonationById);
 
 // Webhook endpoints (CORS bypassed and parsed as raw body in server.js for Stripe verification)
 router.post('/webhook/stripe', stripeWebhook);

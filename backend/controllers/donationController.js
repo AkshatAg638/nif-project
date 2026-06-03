@@ -1,11 +1,18 @@
 import crypto from 'crypto';
 import Stripe from 'stripe';
 import Razorpay from 'razorpay';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import Donation from '../models/Donation.js';
 import Project from '../models/Project.js';
 import Counter from '../models/Counter.js';
 import { sendEmail } from '../utils/email.js';
+import { sendWhatsApp } from '../utils/whatsapp.js';
 import { generateDonationReceiptPDF as genPDF } from '../utils/receiptGenerator.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'mock_stripe_key');
 
@@ -28,6 +35,23 @@ const finalizeDonation = async (donation) => {
 
     // Generate PDF receipt
     const pdfBuffer = await genPDF(donation);
+
+    // Save PDF receipt locally
+    try {
+      const publicDir = path.join(__dirname, '../public/receipts');
+      if (!fs.existsSync(publicDir)) {
+        fs.mkdirSync(publicDir, { recursive: true });
+      }
+      const filename = `Namokriti_Receipt_${receiptNo}.pdf`;
+      const filePath = path.join(publicDir, filename);
+      fs.writeFileSync(filePath, pdfBuffer);
+
+      donation.receiptUrl = `/public/receipts/${filename}`;
+      await donation.save();
+      console.log(`💾  [RECEIPT STORAGE] Saved PDF receipt locally: ${donation.receiptUrl}`);
+    } catch (saveErr) {
+      console.error('❌  [RECEIPT STORAGE] Failed to save receipt PDF locally:', saveErr.message);
+    }
 
     // Send thank you email with PDF attachment
     await sendEmail({
@@ -56,6 +80,20 @@ const finalizeDonation = async (donation) => {
         },
       ],
     });
+
+    // Trigger WhatsApp notification in background
+    if (donation.phone) {
+      const backendUrl = process.env.BACKEND_URL || 'http://localhost:6002';
+      const downloadUrl = `${backendUrl}/public/receipts/Namokriti_Receipt_${receiptNo}.pdf`;
+      const whatsappMessage = `Dear ${donation.name},\n\nThank you so much for your donation of ${donation.currency} ${donation.amount.toFixed(2)} to Namokriti International Foundation.\n\nYou can view and download your official tax-exempt receipt (${receiptNo}) here:\n${downloadUrl}\n\nThank you for making a difference!`;
+
+      sendWhatsApp({
+        to: donation.phone,
+        message: whatsappMessage,
+      }).catch((wsErr) => {
+        console.error('❌  [WHATSAPP SERVICE] Background dispatch error:', wsErr.message);
+      });
+    }
 
     // Update Project funding progress if purpose maps to project
     const project = await Project.findOne({ title: donation.purpose });
@@ -376,6 +414,41 @@ export const getStats = async (req, res, next) => {
         totalDonations,
         donationTrends,
         categoryBreakdown,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get single donation by ID (Public, for success page verification)
+// @route   GET /api/donations/:id
+// @access  Public
+export const getDonationById = async (req, res, next) => {
+  try {
+    const donation = await Donation.findById(req.params.id);
+    if (!donation) {
+      return res.status(404).json({ success: false, message: 'Donation record not found' });
+    }
+    // Only return completed donations to avoid exposing sensitive pending checkout info
+    if (donation.status !== 'completed') {
+      return res.status(400).json({ success: false, message: 'Donation not completed yet' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        id: donation._id,
+        name: donation.name,
+        email: donation.email,
+        phone: donation.phone,
+        amount: donation.amount,
+        currency: donation.currency || 'INR',
+        purpose: donation.purpose,
+        receiptNumber: donation.receiptNumber,
+        receiptUrl: donation.receiptUrl,
+        paymentGateway: donation.paymentGateway,
+        createdAt: donation.createdAt,
       },
     });
   } catch (error) {

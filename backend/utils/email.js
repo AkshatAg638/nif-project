@@ -5,13 +5,22 @@ import nodemailer from 'nodemailer';
  * @param {Object} options email configurations (email, subject, message, html, attachments)
  */
 export const sendEmail = async (options) => {
+  // Check if SMTP is configured
+  const smtpUser = process.env.SMTP_USER || '';
+  const smtpPass = process.env.SMTP_PASS || '';
+  
+  if (!smtpUser || smtpUser === 'your_smtp_user' || !smtpPass || smtpPass === 'your_smtp_password') {
+    console.warn(`⚠️  [EMAIL SERVICE] SMTP credentials are not configured in backend/.env. Skipping email dispatch to ${options.email}.`);
+    return { success: false, message: 'SMTP credentials not configured' };
+  }
+
   // Create transporter
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'sandbox.smtp.mailtrap.io',
     port: process.env.SMTP_PORT || 2525,
     auth: {
-      user: process.env.SMTP_USER || '',
-      pass: process.env.SMTP_PASS || '',
+      user: smtpUser,
+      pass: smtpPass,
     },
   });
 

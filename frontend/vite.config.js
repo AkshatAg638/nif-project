@@ -12,6 +12,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/public': {
+        target: 'http://localhost:6002',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });
