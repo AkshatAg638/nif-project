@@ -169,9 +169,9 @@ export const About = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
             {(team.length === 0 ? [
-              { name: 'Dr. Vivek Sharma', role: 'Founder & Chairperson', image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format' },
-              { name: 'Smt. Priya Nair', role: 'Executive Trustee', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format' },
-              { name: 'Mr. Johnathan Smith', role: 'Director - Field Logistics', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format' },
+              { name: 'Shri Karan Jain(Nitin)', role: 'Founder', image: '/images/founder2.png' },
+              { name: 'Shri Dharamveer Singh', role: 'Founder', image: '/images/founder1.png' },
+
             ] : team).map((member, i) => (
               <div key={i} className="group space-y-4">
                 {/* Image Wrap with Offset Borders */}

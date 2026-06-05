@@ -15,6 +15,7 @@ import Gallery from './pages/Gallery.jsx';
 import Blog from './pages/Blog.jsx';
 import BlogDetail from './pages/BlogDetail.jsx';
 import Contact from './pages/Contact.jsx';
+import About from './pages/About.jsx';
 
 // Import Auth Pages
 import Login from './pages/Login.jsx';
@@ -44,6 +45,7 @@ export const App = () => {
         <Routes>
           {/* Public Routing */}
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/projects/:slug" element={<ProjectDetail />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/donation-success" element={<DonationSuccess />} />

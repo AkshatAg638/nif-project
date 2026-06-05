@@ -122,11 +122,11 @@ export const Footer = () => {
             {/* Social Icons */}
             <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
               {[
-                { icon: Facebook,  href: '#', label: 'Facebook' },
-                { icon: Twitter,   href: '#', label: 'Twitter' },
+                { icon: Facebook, href: '#', label: 'Facebook' },
+                { icon: Twitter, href: '#', label: 'Twitter' },
                 { icon: Instagram, href: '#', label: 'Instagram' },
-                { icon: Linkedin,  href: '#', label: 'LinkedIn' },
-                { icon: Youtube,   href: '#', label: 'YouTube' },
+                { icon: Linkedin, href: '#', label: 'LinkedIn' },
+                { icon: Youtube, href: '#', label: 'YouTube' },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
@@ -179,14 +179,11 @@ export const Footer = () => {
             </h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
-                { to: '/about',     label: 'About Us' },
-                { to: '/programs',  label: 'Our Programs' },
-                { to: '/projects',  label: 'Campaigns & Projects' },
-                { to: '/events',    label: 'Upcoming Events' },
+                { to: '/about', label: 'About Us' },
                 { to: '/volunteer', label: 'Join as Volunteer' },
-                { to: '/gallery',   label: 'Gallery' },
-                { to: '/blog',      label: 'Field Notes' },
-                { to: '/contact',   label: 'Contact Us' },
+                { to: '/gallery', label: 'Gallery' },
+                { to: '/blog', label: 'Field Notes' },
+                { to: '/contact', label: 'Contact Us' },
               ].map(({ to, label }) => (
                 <li key={to}>
                   <Link
@@ -219,10 +216,10 @@ export const Footer = () => {
             </h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
-                { to: '/privacy-policy',  label: 'Privacy Policy' },
-                { to: '/terms-conditions',label: 'Terms & Conditions' },
-                { to: '/refund-policy',   label: 'Refund Policy' },
-                { to: '/cookie-policy',   label: 'Cookie Policy' },
+                { to: '/privacy-policy', label: 'Privacy Policy' },
+                { to: '/terms-conditions', label: 'Terms & Conditions' },
+                { to: '/refund-policy', label: 'Refund Policy' },
+                { to: '/cookie-policy', label: 'Cookie Policy' },
                 { to: '/donation-policy', label: 'Donation Policy' },
               ].map(({ to, label }) => (
                 <li key={to}>

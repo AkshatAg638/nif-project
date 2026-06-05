@@ -62,9 +62,9 @@ const sectorConfig = [
 /* ── Stats config ────────────────────────────────────────────── */
 const statsConfig = [
   { value: '50,000+', label: 'Lives Touched', sub: 'Directly Reached', icon: Heart, color: '#C1694F' },
-  { value: '120',     label: 'Projects Done', sub: 'Fully Documented', icon: Star, color: '#E9C46A' },
-  { value: '1,200+',  label: 'Volunteers',    sub: 'On The Ground',    icon: Users, color: '#74C69D' },
-  { value: '₹1.5Cr+', label: 'Mobilised',    sub: 'Transparently',    icon: BookOpen, color: '#2D6A4F' },
+  { value: '120', label: 'Projects Done', sub: 'Fully Documented', icon: Star, color: '#E9C46A' },
+  { value: '1,200+', label: 'Volunteers', sub: 'On The Ground', icon: Users, color: '#74C69D' },
+  { value: '₹1.5Cr+', label: 'Mobilised', sub: 'Transparently', icon: BookOpen, color: '#2D6A4F' },
 ];
 
 /* ── Scroll reveal hook ──────────────────────────────────────── */
@@ -121,13 +121,13 @@ export const Home = () => {
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
-  const heroRef       = useRef(null);
-  const statsRef      = useReveal();
-  const missionRef    = useReveal();
-  const sectorsRef    = useReveal();
-  const campaignsRef  = useReveal();
+  const heroRef = useRef(null);
+  const statsRef = useReveal();
+  const missionRef = useReveal();
+  const sectorsRef = useReveal();
+  const campaignsRef = useReveal();
   const testimonialsRef = useReveal();
-  const blogRef       = useReveal();
+  const blogRef = useReveal();
 
   /* Parallax hero */
   useEffect(() => {
@@ -182,7 +182,7 @@ export const Home = () => {
   const aboutBriefData = settings?.aboutBrief || {
     title: 'Sacred Action. Real Change.',
     content: 'Namokriti — from Sanskrit: Sacred Action. We are a registered non-profit that takes direct, documented action inside underserved Indian communities. No middlemen. No abstractions. Every rupee goes to a named village, a named person, a named outcome.',
-    image: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=800&auto=format',
+    image: '/images/who-we-are-v5.jpg',
   };
 
   return (
@@ -414,7 +414,7 @@ export const Home = () => {
                 >
                   <span style={{ display: 'block', fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 900 }}>40+</span>
                   <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, marginTop: 2, opacity: 0.85, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                    Village<br/>Locations
+                    Village<br />Locations
                   </span>
                 </div>
               </div>
