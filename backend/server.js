@@ -63,6 +63,7 @@ app.use(globalLimiter);
 // ─── 5. CORS Configuration ────────────────────────────────────────────────────
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
+  'https://nif-project.vercel.app',
   ...(isProduction ? ['https://namokriti.org', 'https://www.namokriti.org'] : ['http://localhost:3000']),
 ];
 
