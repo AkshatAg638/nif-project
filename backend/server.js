@@ -282,45 +282,42 @@ app.use('*', (req, res) => {
 app.use(errorHandler);
 
 // ─── 21. Start Server ─────────────────────────────────────────────────────────
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = parseInt(process.env.PORT || '6002', 10);
+const PORT = parseInt(process.env.PORT || '6002', 10);
 
-  const server = app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
+
+// ─── 22. Graceful Shutdown ────────────────────────────────────────────────────
+const shutdown = (signal) => {
+  console.log(`\n[SERVER] ${signal} received. Shutting down gracefully...`);
+  server.close(() => {
+    console.log('[SERVER] HTTP server closed.');
+    process.exit(0);
   });
 
-  // ─── 22. Graceful Shutdown ────────────────────────────────────────────────────
-  const shutdown = (signal) => {
-    console.log(`\n[SERVER] ${signal} received. Shutting down gracefully...`);
-    server.close(() => {
-      console.log('[SERVER] HTTP server closed.');
-      process.exit(0);
-    });
-
-    // Force exit after 10 seconds if graceful shutdown fails
-    setTimeout(() => {
-      console.error('[SERVER] Forcing shutdown after timeout.');
-      process.exit(1);
-    }, 10000);
-  };
-
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
-
-  // Handle unhandled promise rejections
-  process.on('unhandledRejection', (err) => {
-    console.error(`[ERROR] UnhandledRejection: ${err.message}`);
-    console.error(err.stack);
-    server.close(() => process.exit(1));
-  });
-
-  // Handle uncaught exceptions
-  process.on('uncaughtException', (err) => {
-    console.error(`[ERROR] UncaughtException: ${err.message}`);
-    console.error(err.stack);
+  // Force exit after 10 seconds if graceful shutdown fails
+  setTimeout(() => {
+    console.error('[SERVER] Forcing shutdown after timeout.');
     process.exit(1);
-  });
-}
+  }, 10000);
+};
 
-// Export for Vercel
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error(`[ERROR] UnhandledRejection: ${err.message}`);
+  console.error(err.stack);
+  server.close(() => process.exit(1));
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error(`[ERROR] UncaughtException: ${err.message}`);
+  console.error(err.stack);
+  process.exit(1);
+});
+
 export default app;
