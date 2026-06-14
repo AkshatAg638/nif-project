@@ -17,21 +17,14 @@ import Events from './Events.jsx';
 const sectorConfig = [
   {
     title: 'Education Support',
-    desc: 'School kits, scholarships, and bridge-learning centers reaching 12,000+ children.',
+    desc: 'School kits, scholarships, and bridge-learning centers reaching 1,000+ children.',
     icon: GraduationCap,
     accent: '#2D6A4F',
     bg: '#f0f9f4',
   },
   {
-    title: 'Healthcare Access',
-    desc: 'Monthly diagnosis camps and medicine across 40 remote villages.',
-    icon: Heart,
-    accent: '#C1694F',
-    bg: '#fdf5f2',
-  },
-  {
     title: 'Women Empowerment',
-    desc: 'Vocational training for 800+ women and self-help group starter kits.',
+    desc: 'Vocational training for 100+ women and self-help group starter kits.',
     icon: Users,
     accent: '#E9C46A',
     bg: '#fdf8ec',
@@ -52,7 +45,7 @@ const sectorConfig = [
   },
   {
     title: 'Rural Development',
-    desc: 'Water supply, drainage, and paving of primary streets in 18 villages.',
+    desc: 'Water supply, drainage, and paving of primary streets in 2+ villages.',
     icon: Droplets,
     accent: '#C1694F',
     bg: '#fdf5f2',
@@ -61,10 +54,10 @@ const sectorConfig = [
 
 /* ── Stats config ────────────────────────────────────────────── */
 const statsConfig = [
-  { value: '50,000+', label: 'Lives Touched', sub: 'Directly Reached', icon: Heart, color: '#C1694F' },
-  { value: '120', label: 'Projects Done', sub: 'Fully Documented', icon: Star, color: '#E9C46A' },
-  { value: '1,200+', label: 'Volunteers', sub: 'On The Ground', icon: Users, color: '#74C69D' },
-  { value: '₹1.5Cr+', label: 'Mobilised', sub: 'Transparently', icon: BookOpen, color: '#2D6A4F' },
+  { value: '350+', label: 'Lives Touched', sub: 'Directly Reached', icon: Heart, color: '#C1694F' },
+  { value: '6+', label: 'Projects Done', sub: 'Fully Documented', icon: Star, color: '#E9C46A' },
+  { value: '5+', label: 'Volunteers', sub: 'On The Ground', icon: Users, color: '#74C69D' },
+  { value: '₹15Lakhs+', label: 'Mobilised', sub: 'Transparently', icon: BookOpen, color: '#2D6A4F' },
 ];
 
 /* ── Scroll reveal hook ──────────────────────────────────────── */
@@ -394,7 +387,7 @@ export const Home = () => {
               <div className="relative flex justify-center lg:justify-start">
                 <div className="polaroid" style={{ maxWidth: 460, width: '100%', transform: 'rotate(-1.5deg)' }}>
                   <img
-                    src={aboutBriefData.image}
+                    src="/images/who-we-are-v5.jpg"
                     alt="Namokriti field team working with children"
                     style={{ width: '100%', height: 340, objectFit: 'cover', borderRadius: 2, display: 'block' }}
                   />
@@ -412,9 +405,9 @@ export const Home = () => {
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  <span style={{ display: 'block', fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 900 }}>40+</span>
+                  <span style={{ display: 'block', fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', fontWeight: 900 }}>2+</span>
                   <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, marginTop: 2, opacity: 0.85, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                    Village<br />Locations
+                    Locations
                   </span>
                 </div>
               </div>
@@ -734,7 +727,7 @@ export const Home = () => {
               Be the reason a child smiles today.
             </h2>
             <p style={{ color: 'rgba(250,247,240,0.7)', fontSize: '1rem', lineHeight: 1.7, marginBottom: '2.5rem' }}>
-              Every rupee is tracked. Every impact is documented. Join 1,200+ volunteers changing real lives.
+              Every rupee is tracked. Every impact is documented. Join 5+ volunteers changing real lives.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               <Link to="/donate" className="btn-terracotta" aria-label="Make a donation">

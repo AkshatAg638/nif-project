@@ -116,7 +116,7 @@ export const Footer = () => {
 
             <p style={{ fontSize: '0.85rem', color: '#8aaa97', lineHeight: 1.8 }}>
               Empowering communities through direct, documented action — education, healthcare,
-              and clean water inside 40+ underserved villages.
+              and clean water inside 2+ underserved villages.
             </p>
 
             {/* Social Icons */}

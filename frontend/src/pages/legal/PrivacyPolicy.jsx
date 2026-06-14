@@ -9,8 +9,8 @@ export const PrivacyPolicy = () => {
         Privacy Policy for Namokriti International Foundation
       </h1>
       <p className="text-sm font-semibold text-slate-500">
-        <strong>Effective Date:</strong> [Date]<br />
-        <strong>Last Updated:</strong> [Date]
+        <strong>Effective Date:</strong> [5 July 2025]<br />
+        <strong>Last Updated:</strong> [5 July 2025]
       </p>
 
       <div className="prose dark:prose-invert text-slate-600 dark:text-slate-400 text-sm leading-relaxed space-y-6 max-w-none">
