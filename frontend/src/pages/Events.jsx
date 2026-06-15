@@ -23,7 +23,6 @@ export const Events = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
-  const [timeFilter, setTimeFilter] = useState('upcoming');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -42,7 +41,6 @@ export const Events = () => {
         params: {
           search,
           category,
-          timeFilter,
           page,
           limit: 6,
         },
@@ -60,7 +58,7 @@ export const Events = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, [category, timeFilter, page]);
+  }, [category, page]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -135,32 +133,6 @@ export const Events = () => {
             Search
           </button>
         </form>
-
-        {/* Time filters */}
-        <div className="flex gap-6 shrink-0">
-          <button
-            onClick={() => {
-              setTimeFilter('upcoming');
-              setPage(1);
-            }}
-            className={`text-xs font-bold uppercase tracking-wider pb-1 transition-all border-b-2 cursor-pointer ${
-              timeFilter === 'upcoming' ? 'border-[#2D6A4F] text-[#2D6A4F]' : 'border-transparent text-[#4a6355] hover:text-[#2D6A4F]'
-            }`}
-          >
-            Upcoming Events
-          </button>
-          <button
-            onClick={() => {
-              setTimeFilter('past');
-              setPage(1);
-            }}
-            className={`text-xs font-bold uppercase tracking-wider pb-1 transition-all border-b-2 cursor-pointer ${
-              timeFilter === 'past' ? 'border-[#2D6A4F] text-[#2D6A4F]' : 'border-transparent text-[#4a6355] hover:text-[#2D6A4F]'
-            }`}
-          >
-            Past Concluded
-          </button>
-        </div>
       </div>
 
       {/* Events Grid — Asymmetric Editorial Profile cards */}
@@ -179,8 +151,8 @@ export const Events = () => {
           {events.map((ev) => (
             <div
               key={ev._id}
-              className={`group flex flex-col justify-between space-y-6 ${timeFilter === 'past' ? 'cursor-pointer' : ''}`}
-              onClick={timeFilter === 'past' ? () => setDetailEvent(ev) : undefined}
+              className={`group flex flex-col justify-between space-y-6 ${new Date(ev.date) < new Date() ? 'cursor-pointer' : ''}`}
+              onClick={new Date(ev.date) < new Date() ? () => setDetailEvent(ev) : undefined}
             >
               {/* Image Section */}
               <div className="relative overflow-hidden rounded-2xl border border-[#2D6A4F]/10">
@@ -222,7 +194,7 @@ export const Events = () => {
 
               {/* Action Button */}
               <div className="pt-2">
-                {timeFilter === 'upcoming' ? (
+                {new Date(ev.date) >= new Date() ? (
                   <button
                     onClick={() => setRsvpEventId(ev._id)}
                     className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#C1694F] group-hover:text-[#1a2e22] transition-colors cursor-pointer"
