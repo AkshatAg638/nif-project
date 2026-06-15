@@ -20,7 +20,6 @@ const router = express.Router();
 router.post('/checkout/stripe', globalLimiter, validateDonation, checkoutStripe);
 router.post('/checkout/razorpay', globalLimiter, validateDonation, checkoutRazorpay);
 router.post('/verify/razorpay', globalLimiter, verifyRazorpayPayment);
-router.get('/:id', globalLimiter, getDonationById);
 
 // Webhook endpoints (CORS bypassed and parsed as raw body in server.js for Stripe verification)
 router.post('/webhook/stripe', stripeWebhook);
@@ -33,5 +32,8 @@ router.use(authorize('super-admin', 'admin', 'editor'));
 router.get('/', getDonations);
 router.get('/export', exportDonationsCSV);
 router.get('/stats', getStats);
+
+// Move /:id to the bottom so it doesn't intercept /stats or /export
+router.get('/:id', globalLimiter, getDonationById);
 
 export default router;

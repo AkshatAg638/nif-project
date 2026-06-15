@@ -41,7 +41,7 @@ export const DashboardHome = () => {
     fetchStatsAndCounts();
   }, []);
 
-  const totalDonationsAmount = stats?.totalDonations || 450000; // Mock default
+  const totalDonationsAmount = stats?.totalDonations ?? 450000; // Fallback only if stats is null/undefined
 
   // Fallback / Default Chart Data
   const trendData = stats?.donationTrends?.length > 0
