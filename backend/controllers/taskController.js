@@ -1,5 +1,6 @@
 import VolunteerTask from '../models/VolunteerTask.js';
 import User from '../models/User.js';
+import Volunteer from '../models/Volunteer.js';
 
 // @desc    Create task(s) and assign to volunteers
 // @route   POST /api/tasks
@@ -19,9 +20,17 @@ export const createTask = async (req, res, next) => {
       const allVolunteers = await User.find({ role: 'user' }).select('_id');
       userIds = allVolunteers.map((u) => u._id);
     } else if (targetType === 'multiple' && Array.isArray(targetUserIds) && targetUserIds.length > 0) {
-      userIds = targetUserIds;
+      // targetUserIds are Volunteer _ids. Find corresponding User _ids via email.
+      const vols = await Volunteer.find({ _id: { $in: targetUserIds } }).select('email');
+      const emails = vols.map((v) => v.email.toLowerCase());
+      const users = await User.find({ email: { $in: emails } }).select('_id');
+      userIds = users.map((u) => u._id);
     } else if (targetType === 'single' && targetUserIds) {
-      userIds = [targetUserIds];
+      const vol = await Volunteer.findById(targetUserIds).select('email');
+      if (vol) {
+        const user = await User.findOne({ email: vol.email.toLowerCase() }).select('_id');
+        if (user) userIds = [user._id];
+      }
     } else {
       return res.status(400).json({ success: false, message: 'Invalid target assignment. Provide targetType and targetUserIds.' });
     }
