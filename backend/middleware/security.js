@@ -60,6 +60,16 @@ const sanitizeValue = (value) => {
 
 const sanitizeObject = (obj) => {
   if (!obj || typeof obj !== 'object') return obj;
+  
+  // Preserve arrays — sanitize each element but keep the array structure
+  if (Array.isArray(obj)) {
+    return obj.map((item) => {
+      if (typeof item === 'string') return sanitizeValue(item);
+      if (typeof item === 'object' && item !== null) return sanitizeObject(item);
+      return item;
+    });
+  }
+
   const result = {};
   for (const key of Object.keys(obj)) {
     const val = obj[key];
